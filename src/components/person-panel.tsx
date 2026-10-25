@@ -120,21 +120,18 @@ export function PersonPanel({
           </div>
         </div>
 
-        <div className="space-y-1.5 rounded-xl bg-white/80 p-2 ring-1 ring-stone-200/90">
-          <div className="flex items-center justify-between gap-2">
+        <div className="space-y-1 rounded-xl bg-white/80 p-2 ring-1 ring-stone-200/90">
+          <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
             <p className="text-[0.95rem] font-bold text-stone-800">Ht</p>
             <UnitTabs
               options={HEIGHT_UNITS}
               value={value.heightUnit}
               onChange={(heightUnit) => patch({ heightUnit })}
             />
-          </div>
-
-          {value.heightUnit === "ftin" && (
-            <div className="space-y-1">
-              <div className="flex items-center gap-1.5">
+            {value.heightUnit === "ftin" && (
+              <>
                 <div
-                  className="flex shrink-0 gap-1"
+                  className="flex shrink-0 gap-0.5"
                   role="radiogroup"
                   aria-label={`${title} feet`}
                 >
@@ -146,7 +143,7 @@ export function PersonPanel({
                       aria-checked={feet === option}
                       onClick={() => setHeightFromFeetInches(option, inches)}
                       className={cn(
-                        "size-9 rounded-lg border text-[0.95rem] font-bold tabular-nums transition-colors",
+                        "size-8 rounded-md border text-[0.9rem] font-bold tabular-nums transition-colors",
                         feet === option ? chipOn : "border-stone-300 bg-white text-stone-800"
                       )}
                     >
@@ -154,7 +151,7 @@ export function PersonPanel({
                     </button>
                   ))}
                 </div>
-                <span className="text-[0.85rem] font-semibold text-stone-500">ft</span>
+                <span className="text-[0.8rem] font-semibold text-stone-500">ft</span>
                 <TinyNumber
                   id={`${title}-inches`}
                   min={0}
@@ -162,84 +159,150 @@ export function PersonPanel({
                   step={0.5}
                   value={inches}
                   onChange={(nextInches) => setHeightFromFeetInches(feet, nextInches)}
-                  className="w-12"
+                  className="w-11"
                 />
-                <span className="text-[0.85rem] font-semibold text-stone-500">in</span>
-              </div>
-              <input
-                type="range"
-                aria-label={`${title} inches`}
-                min={0}
-                max={11.5}
-                step={0.5}
-                value={inches}
-                onInput={(event) =>
-                  setHeightFromFeetInches(feet, Number((event.target as HTMLInputElement).value))
-                }
-                onChange={(event) => setHeightFromFeetInches(feet, Number(event.target.value))}
-                className="block h-7 w-full cursor-pointer accent-stone-900"
-              />
-            </div>
+                <span className="text-[0.8rem] font-semibold text-stone-500">in</span>
+              </>
+            )}
+            {value.heightUnit === "cm" && (
+              <>
+                <TinyNumber
+                  id={`${title}-cm`}
+                  min={140}
+                  max={210}
+                  step={1}
+                  value={clamp(cm, 140, 210)}
+                  onChange={(nextCm) => patch({ heightM: cmToM(Math.round(nextCm)) })}
+                  className="w-14"
+                />
+                <span className="text-[0.8rem] font-semibold text-stone-500">cm</span>
+              </>
+            )}
+            {value.heightUnit === "m" && (
+              <>
+                <TinyNumber
+                  id={`${title}-m`}
+                  min={1.4}
+                  max={2.1}
+                  step={0.01}
+                  value={Number(clamp(value.heightM, 1.4, 2.1).toFixed(2))}
+                  onChange={(heightM) => patch({ heightM: Number(heightM.toFixed(2)) })}
+                  className="w-14"
+                />
+                <span className="text-[0.8rem] font-semibold text-stone-500">m</span>
+              </>
+            )}
+          </div>
+          {value.heightUnit === "ftin" && (
+            <input
+              type="range"
+              aria-label={`${title} inches`}
+              min={0}
+              max={11.5}
+              step={0.5}
+              value={inches}
+              onInput={(event) =>
+                setHeightFromFeetInches(feet, Number((event.target as HTMLInputElement).value))
+              }
+              onChange={(event) => setHeightFromFeetInches(feet, Number(event.target.value))}
+              className="block h-6 w-full cursor-pointer accent-stone-900"
+            />
           )}
-
           {value.heightUnit === "cm" && (
-            <CompactField
-              idPrefix={title}
-              label="Cm"
-              unit="cm"
+            <input
+              type="range"
+              aria-label={`${title} cm`}
               min={140}
               max={210}
               step={1}
               value={clamp(cm, 140, 210)}
-              onChange={(nextCm) => patch({ heightM: cmToM(Math.round(nextCm)) })}
+              onInput={(event) =>
+                patch({ heightM: cmToM(Number((event.target as HTMLInputElement).value)) })
+              }
+              onChange={(event) => patch({ heightM: cmToM(Number(event.target.value)) })}
+              className="block h-6 w-full cursor-pointer accent-stone-900"
             />
           )}
-
           {value.heightUnit === "m" && (
-            <CompactField
-              idPrefix={title}
-              label="M"
-              unit="m"
+            <input
+              type="range"
+              aria-label={`${title} m`}
               min={1.4}
               max={2.1}
               step={0.01}
-              value={Number(clamp(value.heightM, 1.4, 2.1).toFixed(2))}
-              onChange={(heightM) => patch({ heightM: Number(heightM.toFixed(2)) })}
+              value={clamp(value.heightM, 1.4, 2.1)}
+              onInput={(event) =>
+                patch({ heightM: Number((event.target as HTMLInputElement).value) })
+              }
+              onChange={(event) => patch({ heightM: Number(event.target.value) })}
+              className="block h-6 w-full cursor-pointer accent-stone-900"
             />
           )}
         </div>
 
-        <div className="space-y-1.5 rounded-xl bg-white/80 p-2 ring-1 ring-stone-200/90">
-          <div className="flex items-center justify-between gap-2">
+        <div className="space-y-1 rounded-xl bg-white/80 p-2 ring-1 ring-stone-200/90">
+          <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
             <p className="text-[0.95rem] font-bold text-stone-800">Wt</p>
             <UnitTabs
               options={WEIGHT_UNITS}
               value={value.weightUnit}
               onChange={(weightUnit) => patch({ weightUnit })}
             />
+            {value.weightUnit === "lb" ? (
+              <>
+                <TinyNumber
+                  id={`${title}-lb`}
+                  min={80}
+                  max={400}
+                  step={1}
+                  value={clamp(lb, 80, 400)}
+                  onChange={(nextLb) => patch({ weightKg: lbToKg(Math.round(nextLb)) })}
+                  className="w-14"
+                />
+                <span className="text-[0.8rem] font-semibold text-stone-500">lb</span>
+              </>
+            ) : (
+              <>
+                <TinyNumber
+                  id={`${title}-kg`}
+                  min={35}
+                  max={180}
+                  step={1}
+                  value={clamp(kg, 35, 180)}
+                  onChange={(weightKg) => patch({ weightKg: Math.round(weightKg) })}
+                  className="w-14"
+                />
+                <span className="text-[0.8rem] font-semibold text-stone-500">kg</span>
+              </>
+            )}
           </div>
-
           {value.weightUnit === "lb" ? (
-            <CompactField
-              idPrefix={title}
-              label="Lb"
-              unit="lb"
+            <input
+              type="range"
+              aria-label={`${title} lb`}
               min={80}
               max={400}
               step={1}
               value={clamp(lb, 80, 400)}
-              onChange={(nextLb) => patch({ weightKg: lbToKg(Math.round(nextLb)) })}
+              onInput={(event) =>
+                patch({ weightKg: lbToKg(Number((event.target as HTMLInputElement).value)) })
+              }
+              onChange={(event) => patch({ weightKg: lbToKg(Number(event.target.value)) })}
+              className="block h-6 w-full cursor-pointer accent-stone-900"
             />
           ) : (
-            <CompactField
-              idPrefix={title}
-              label="Kg"
-              unit="kg"
+            <input
+              type="range"
+              aria-label={`${title} kg`}
               min={35}
               max={180}
               step={1}
               value={clamp(kg, 35, 180)}
-              onChange={(weightKg) => patch({ weightKg: Math.round(weightKg) })}
+              onInput={(event) =>
+                patch({ weightKg: Number((event.target as HTMLInputElement).value) })
+              }
+              onChange={(event) => patch({ weightKg: Number(event.target.value) })}
+              className="block h-6 w-full cursor-pointer accent-stone-900"
             />
           )}
         </div>
@@ -358,98 +421,3 @@ function TinyNumber({
   )
 }
 
-function CompactField({
-  idPrefix,
-  label,
-  unit,
-  min,
-  max,
-  step,
-  value,
-  onChange,
-}: {
-  idPrefix: string
-  label: string
-  unit: string
-  min: number
-  max: number
-  step: number
-  value: number
-  onChange: (next: number) => void
-}) {
-  const fieldId = `${idPrefix}-${label}`.toLowerCase().replace(/\s+/g, "-")
-  const [draft, setDraft] = useState<string | null>(null)
-
-  function commit(raw: number) {
-    if (!Number.isFinite(raw)) return
-    onChange(clamp(raw, min, max))
-  }
-
-  function parseDraft(text: string) {
-    const trimmed = text.trim()
-    if (trimmed === "" || trimmed === "-" || trimmed === ".") return null
-    const next = Number(trimmed)
-    return Number.isFinite(next) ? next : null
-  }
-
-  const display = draft ?? formatFieldValue(value, step)
-
-  return (
-    <div className="space-y-1">
-      <div className="flex items-center gap-2">
-        <label className="min-w-[1.75rem] text-[0.9rem] font-semibold text-stone-700" htmlFor={fieldId}>
-          {label}
-        </label>
-        <input
-          id={fieldId}
-          type="text"
-          inputMode="decimal"
-          enterKeyHint="done"
-          autoComplete="off"
-          autoCorrect="off"
-          spellCheck={false}
-          value={display}
-          onFocus={(event) => {
-            setDraft(formatFieldValue(value, step))
-            event.currentTarget.select()
-          }}
-          onChange={(event) => {
-            const text = event.target.value.replace(/[^\d.-]/g, "")
-            setDraft(text)
-            const parsed = parseDraft(text)
-            if (parsed !== null) commit(parsed)
-          }}
-          onBlur={() => {
-            const parsed = parseDraft(draft ?? "")
-            commit(parsed ?? value)
-            setDraft(null)
-          }}
-          onKeyDown={(event) => {
-            if (event.key === "Enter") event.currentTarget.blur()
-          }}
-          className="h-9 min-w-0 flex-1 rounded-lg border border-stone-300 bg-white px-2 text-right text-[1.1rem] font-semibold tabular-nums text-stone-900 outline-none focus:border-stone-800 focus:ring-2 focus:ring-stone-800/20"
-        />
-        <span className="w-7 text-[0.85rem] font-semibold text-stone-500">{unit}</span>
-      </div>
-      <input
-        type="range"
-        aria-label={`${idPrefix} ${label}`}
-        min={min}
-        max={max}
-        step={step}
-        value={clamp(value, min, max)}
-        onInput={(event) => {
-          const next = Number((event.target as HTMLInputElement).value)
-          commit(next)
-          if (draft !== null) setDraft(formatFieldValue(next, step))
-        }}
-        onChange={(event) => {
-          const next = Number(event.target.value)
-          commit(next)
-          if (draft !== null) setDraft(formatFieldValue(next, step))
-        }}
-        className="block h-7 w-full cursor-pointer accent-stone-900"
-      />
-    </div>
-  )
-}

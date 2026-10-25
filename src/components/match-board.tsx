@@ -44,25 +44,28 @@ export function MatchBoard() {
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-lg flex-col">
       <header className="sticky top-0 z-20 border-b border-stone-200/80 bg-[#efe8dc]/95 pt-[env(safe-area-inset-top)] backdrop-blur-md">
-        <div className="px-3 pt-2.5 pb-1.5 text-center">
-          <h1 className="font-heading text-[1.55rem] leading-none tracking-tight text-stone-900">
+        <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 px-3 pt-2.5 pb-1.5">
+          <h1 className="font-heading justify-self-start text-[1.35rem] leading-none tracking-tight text-stone-900">
             DonorMan
           </h1>
-          {match && (
-            <div className="mt-1.5" aria-live="polite">
+          {match ? (
+            <div className="flex items-baseline justify-center gap-1.5" aria-live="polite">
               <p
                 className={cn(
-                  "text-[1.7rem] font-bold leading-none tabular-nums",
+                  "text-[1.55rem] font-bold leading-none tabular-nums",
                   undersized ? "text-amber-700" : "text-stone-900"
                 )}
               >
                 {formatRatio(match.phmRatio)}
               </p>
-              <p className="mt-0.5 text-[0.7rem] font-semibold tracking-wide text-stone-500 uppercase">
+              <p className="text-[0.7rem] font-semibold tracking-wide text-stone-500 uppercase">
                 PHM ratio
               </p>
             </div>
+          ) : (
+            <div />
           )}
+          <div aria-hidden="true" />
         </div>
 
         {match && (
