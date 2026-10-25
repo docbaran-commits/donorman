@@ -121,8 +121,8 @@ export function PersonPanel({
         </div>
 
         <div className="space-y-1 rounded-xl bg-white/80 p-2 ring-1 ring-stone-200/90">
-          <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
-            <p className="text-[0.95rem] font-bold text-stone-800">Ht</p>
+          <div className="flex flex-nowrap items-center gap-1 overflow-x-auto">
+            <p className="shrink-0 text-[0.95rem] font-bold text-stone-800">Ht</p>
             <UnitTabs
               options={HEIGHT_UNITS}
               value={value.heightUnit}
@@ -143,7 +143,7 @@ export function PersonPanel({
                       aria-checked={feet === option}
                       onClick={() => setHeightFromFeetInches(option, inches)}
                       className={cn(
-                        "size-8 rounded-md border text-[0.9rem] font-bold tabular-nums transition-colors",
+                        "size-7 rounded-md border text-[0.85rem] font-bold tabular-nums transition-colors",
                         feet === option ? chipOn : "border-stone-300 bg-white text-stone-800"
                       )}
                     >
@@ -151,7 +151,7 @@ export function PersonPanel({
                     </button>
                   ))}
                 </div>
-                <span className="text-[0.8rem] font-semibold text-stone-500">ft</span>
+                <span className="shrink-0 text-[0.75rem] font-semibold text-stone-500">ft</span>
                 <TinyNumber
                   id={`${title}-inches`}
                   min={0}
@@ -159,38 +159,32 @@ export function PersonPanel({
                   step={0.5}
                   value={inches}
                   onChange={(nextInches) => setHeightFromFeetInches(feet, nextInches)}
-                  className="w-11"
+                  className="h-8 w-10"
                 />
-                <span className="text-[0.8rem] font-semibold text-stone-500">in</span>
+                <span className="shrink-0 text-[0.75rem] font-semibold text-stone-500">in</span>
               </>
             )}
             {value.heightUnit === "cm" && (
-              <>
-                <TinyNumber
-                  id={`${title}-cm`}
-                  min={140}
-                  max={210}
-                  step={1}
-                  value={clamp(cm, 140, 210)}
-                  onChange={(nextCm) => patch({ heightM: cmToM(Math.round(nextCm)) })}
-                  className="w-14"
-                />
-                <span className="text-[0.8rem] font-semibold text-stone-500">cm</span>
-              </>
+              <TinyNumber
+                id={`${title}-cm`}
+                min={140}
+                max={210}
+                step={1}
+                value={clamp(cm, 140, 210)}
+                onChange={(nextCm) => patch({ heightM: cmToM(Math.round(nextCm)) })}
+                className="h-8 w-12"
+              />
             )}
             {value.heightUnit === "m" && (
-              <>
-                <TinyNumber
-                  id={`${title}-m`}
-                  min={1.4}
-                  max={2.1}
-                  step={0.01}
-                  value={Number(clamp(value.heightM, 1.4, 2.1).toFixed(2))}
-                  onChange={(heightM) => patch({ heightM: Number(heightM.toFixed(2)) })}
-                  className="w-14"
-                />
-                <span className="text-[0.8rem] font-semibold text-stone-500">m</span>
-              </>
+              <TinyNumber
+                id={`${title}-m`}
+                min={1.4}
+                max={2.1}
+                step={0.01}
+                value={Number(clamp(value.heightM, 1.4, 2.1).toFixed(2))}
+                onChange={(heightM) => patch({ heightM: Number(heightM.toFixed(2)) })}
+                className="h-8 w-12"
+              />
             )}
           </div>
           {value.heightUnit === "ftin" && (
@@ -241,39 +235,33 @@ export function PersonPanel({
         </div>
 
         <div className="space-y-1 rounded-xl bg-white/80 p-2 ring-1 ring-stone-200/90">
-          <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
-            <p className="text-[0.95rem] font-bold text-stone-800">Wt</p>
+          <div className="flex flex-nowrap items-center gap-1 overflow-x-auto">
+            <p className="shrink-0 text-[0.95rem] font-bold text-stone-800">Wt</p>
             <UnitTabs
               options={WEIGHT_UNITS}
               value={value.weightUnit}
               onChange={(weightUnit) => patch({ weightUnit })}
             />
             {value.weightUnit === "lb" ? (
-              <>
-                <TinyNumber
-                  id={`${title}-lb`}
-                  min={80}
-                  max={400}
-                  step={1}
-                  value={clamp(lb, 80, 400)}
-                  onChange={(nextLb) => patch({ weightKg: lbToKg(Math.round(nextLb)) })}
-                  className="w-14"
-                />
-                <span className="text-[0.8rem] font-semibold text-stone-500">lb</span>
-              </>
+              <TinyNumber
+                id={`${title}-lb`}
+                min={80}
+                max={400}
+                step={1}
+                value={clamp(lb, 80, 400)}
+                onChange={(nextLb) => patch({ weightKg: lbToKg(Math.round(nextLb)) })}
+                className="h-8 w-12"
+              />
             ) : (
-              <>
-                <TinyNumber
-                  id={`${title}-kg`}
-                  min={35}
-                  max={180}
-                  step={1}
-                  value={clamp(kg, 35, 180)}
-                  onChange={(weightKg) => patch({ weightKg: Math.round(weightKg) })}
-                  className="w-14"
-                />
-                <span className="text-[0.8rem] font-semibold text-stone-500">kg</span>
-              </>
+              <TinyNumber
+                id={`${title}-kg`}
+                min={35}
+                max={180}
+                step={1}
+                value={clamp(kg, 35, 180)}
+                onChange={(weightKg) => patch({ weightKg: Math.round(weightKg) })}
+                className="h-8 w-12"
+              />
             )}
           </div>
           {value.weightUnit === "lb" ? (
@@ -329,7 +317,7 @@ function UnitTabs<T extends string>({
   onChange: (next: T) => void
 }) {
   return (
-    <div className="inline-flex rounded-full bg-stone-100 p-0.5 ring-1 ring-stone-300">
+    <div className="inline-flex shrink-0 rounded-full bg-stone-100 p-0.5 ring-1 ring-stone-300">
       {options.map((option) => (
         <button
           key={option.id}
@@ -337,7 +325,7 @@ function UnitTabs<T extends string>({
           aria-pressed={value === option.id}
           onClick={() => onChange(option.id)}
           className={cn(
-            "rounded-full px-2 py-0.5 text-[0.75rem] font-bold transition-colors",
+            "rounded-full px-1.5 py-0.5 text-[0.7rem] font-bold transition-colors",
             value === option.id ? "bg-stone-900 text-white" : "text-stone-600"
           )}
         >
@@ -414,7 +402,7 @@ function TinyNumber({
         if (event.key === "Enter") event.currentTarget.blur()
       }}
       className={cn(
-        "h-9 rounded-lg border border-stone-300 bg-white px-1.5 text-center text-[1.05rem] font-bold tabular-nums text-stone-900 outline-none focus:border-stone-800 focus:ring-2 focus:ring-stone-800/20",
+        "h-8 rounded-lg border border-stone-300 bg-white px-1.5 text-center text-[1.05rem] font-bold tabular-nums text-stone-900 outline-none focus:border-stone-800 focus:ring-2 focus:ring-stone-800/20",
         className
       )}
     />
