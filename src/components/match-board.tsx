@@ -39,47 +39,70 @@ export function MatchBoard() {
   const ready = isValidAdultMetrics(recipient) && isValidAdultMetrics(donor)
   const match = ready ? matchDonorRecipient(recipient, donor) : null
   const undersized = match !== null && match.phmRatio < PHM_UNDERSIZE_RATIO
+  const ratioPct = match ? Math.min(140, Math.max(0, match.phmRatio * 100)) : 0
 
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-lg flex-col">
-      <header className="sticky top-0 z-20 border-b border-stone-200/80 bg-[#f3efe6]/95 pt-[env(safe-area-inset-top)] backdrop-blur-md">
-        <div className="px-4 pt-5 pb-3">
-          <p className="text-xs font-semibold tracking-[0.18em] text-teal-800 uppercase">
-            Heart transplant sizing
-          </p>
-          <h1 className="font-heading mt-1 text-[2.35rem] leading-none tracking-tight text-stone-900">
+      <header className="sticky top-0 z-20 border-b border-stone-200/80 bg-[#efe8dc]/95 pt-[env(safe-area-inset-top)] backdrop-blur-md">
+        <div className="flex items-end justify-between gap-3 px-4 pt-4 pb-3">
+          <h1 className="font-heading text-[2.4rem] leading-none tracking-tight text-stone-900">
             DonorMan
           </h1>
-          <p className="mt-2 max-w-[22rem] text-sm leading-relaxed text-stone-600">
-            Predicted heart mass for donor and recipient, with mixed English and metric
-            inputs.
-          </p>
+          <span className="mb-1 text-[0.7rem] font-semibold tracking-[0.14em] text-teal-800 uppercase">
+            PHM match
+          </span>
         </div>
 
         {match && (
-          <div
-            className="border-t border-stone-200/80 bg-white/90 px-4 py-3"
-            aria-live="polite"
-          >
-            <div className="grid grid-cols-3 gap-2 text-center">
-              <LiveStat
-                label="Recipient PHM"
-                value={formatGrams(match.recipient.predictedHeartMassG)}
+          <div className="space-y-3 bg-white/85 px-4 py-3" aria-live="polite">
+            <div className="grid grid-cols-[1fr_auto_1fr] items-end gap-2">
+              <MassBlock
+                label="Recipient"
+                mass={match.recipient.predictedHeartMassG}
+                bmi={match.recipient.bmi}
+                tone="recipient"
               />
-              <LiveStat
-                label="Ratio"
-                value={formatRatio(match.phmRatio)}
-                warn={undersized}
-              />
-              <LiveStat
-                label="Donor PHM"
-                value={formatGrams(match.donor.predictedHeartMassG)}
+              <div className="pb-1 text-center">
+                <p
+                  className={cn(
+                    "font-heading text-3xl leading-none tabular-nums",
+                    undersized ? "text-amber-700" : "text-stone-900"
+                  )}
+                >
+                  {formatRatio(match.phmRatio)}
+                </p>
+                <p className="mt-1 text-[0.65rem] font-medium tracking-wide text-stone-500 uppercase">
+                  ratio
+                </p>
+              </div>
+              <MassBlock
+                label="Donor"
+                mass={match.donor.predictedHeartMassG}
+                bmi={match.donor.bmi}
+                tone="donor"
+                align="right"
               />
             </div>
-            <p className="mt-2 text-center text-xs text-stone-500">
-              {formatPercent(match.phmPercentDifference)} vs recipient · updates as you
-              change fields
-            </p>
+
+            <div className="space-y-1.5">
+              <div className="relative h-3 overflow-hidden rounded-full bg-stone-200">
+                <div
+                  className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-teal-700 to-rose-700 transition-[width] duration-150"
+                  style={{ width: `${ratioPct}%` }}
+                />
+                <div
+                  className="absolute inset-y-0 w-0.5 bg-stone-900/70"
+                  style={{ left: `${PHM_UNDERSIZE_RATIO * 100}%` }}
+                  aria-hidden="true"
+                />
+              </div>
+              <div className="flex items-center justify-between text-[0.7rem] text-stone-500">
+                <span>{formatPercent(match.phmPercentDifference)}</span>
+                <span className={undersized ? "font-semibold text-amber-800" : undefined}>
+                  {undersized ? `Below ${PHM_UNDERSIZE_RATIO}` : `Mark ${PHM_UNDERSIZE_RATIO}`}
+                </span>
+              </div>
+            </div>
           </div>
         )}
 
@@ -89,7 +112,7 @@ export function MatchBoard() {
         </div>
       </header>
 
-      <main className="flex flex-1 flex-col gap-4 px-4 pt-4 pb-10">
+      <main className="flex flex-1 flex-col gap-4 px-4 pt-4 pb-8">
         <PersonPanel
           title="Recipient"
           accent="recipient"
@@ -99,39 +122,9 @@ export function MatchBoard() {
         <PersonPanel title="Donor" accent="donor" value={donor} onChange={setDonor} />
 
         {match && (
-          <section className="rounded-3xl border border-stone-300 bg-white px-4 py-5 shadow-sm">
-            <h2 className="font-heading text-2xl text-stone-900">Match detail</h2>
-            <p className="mt-1 text-sm text-stone-600">
-              PHM ratio and percent difference use adult MESA-based formulas.
-            </p>
-
-            <div className="mt-4 grid grid-cols-2 gap-3">
-              <StatCard
-                label="PHM ratio"
-                value={formatRatio(match.phmRatio)}
-                hint="donor ÷ recipient"
-                warn={undersized}
-              />
-              <StatCard
-                label="PHM difference"
-                value={formatPercent(match.phmPercentDifference)}
-                hint="vs recipient"
-                warn={undersized}
-              />
-            </div>
-
-            {undersized && (
-              <p
-                className="mt-3 rounded-2xl bg-amber-50 px-3 py-2 text-sm text-amber-950 ring-1 ring-amber-200"
-                role="status"
-              >
-                Ratio below {PHM_UNDERSIZE_RATIO} is often treated as severe undersizing in
-                published cohorts.
-              </p>
-            )}
-
-            <div className="mt-5 grid gap-3">
-              <PersonStats
+          <section className="rounded-[1.75rem] border border-stone-200 bg-white px-4 py-4 shadow-sm">
+            <div className="grid grid-cols-2 gap-3">
+              <DetailCard
                 title="Recipient"
                 tone="recipient"
                 phm={match.recipient.predictedHeartMassG}
@@ -139,7 +132,7 @@ export function MatchBoard() {
                 lv={match.recipient.leftVentricularMassG}
                 rv={match.recipient.rightVentricularMassG}
               />
-              <PersonStats
+              <DetailCard
                 title="Donor"
                 tone="donor"
                 phm={match.donor.predictedHeartMassG}
@@ -151,68 +144,53 @@ export function MatchBoard() {
           </section>
         )}
 
-        <p className="px-1 text-xs leading-relaxed text-stone-500">
-          PHM = LV mass + RV mass (Bluemke / Kawut MESA equations; UNOS &amp; ISHLT adult
-          calculator). Validated for adults only. For clinical decision support — not a
-          substitute for judgment or program policy.
+        <p className="px-1 text-center text-[0.7rem] leading-relaxed text-stone-500">
+          Adult PHM · MESA LV+RV · clinical support only
         </p>
       </main>
     </div>
   )
 }
 
-function LiveStat({
+function MassBlock({
   label,
-  value,
-  warn,
+  mass,
+  bmi,
+  tone,
+  align = "left",
 }: {
   label: string
-  value: string
-  warn?: boolean
+  mass: number
+  bmi: number
+  tone: "recipient" | "donor"
+  align?: "left" | "right"
 }) {
   return (
-    <div>
-      <p className="text-[0.65rem] font-medium tracking-wide text-stone-500 uppercase">
-        {label}
-      </p>
-      <p
+    <div className={cn(align === "right" && "text-right")}>
+      <div
         className={cn(
-          "font-heading mt-0.5 text-lg tabular-nums",
-          warn ? "text-amber-800" : "text-stone-900"
+          "mb-1 inline-flex items-center gap-1.5 text-[0.7rem] font-semibold tracking-wide uppercase",
+          tone === "recipient" ? "text-teal-800" : "text-rose-800",
+          align === "right" && "flex-row-reverse"
         )}
       >
-        {value}
+        <span
+          className={cn(
+            "size-2 rounded-full",
+            tone === "recipient" ? "bg-teal-700" : "bg-rose-700"
+          )}
+        />
+        {label}
+      </div>
+      <p className="font-heading text-[1.65rem] leading-none tabular-nums text-stone-900">
+        {formatGrams(mass)}
       </p>
+      <p className="mt-1 text-xs tabular-nums text-stone-500">BMI {formatBmi(bmi)}</p>
     </div>
   )
 }
 
-function StatCard({
-  label,
-  value,
-  hint,
-  warn,
-}: {
-  label: string
-  value: string
-  hint: string
-  warn?: boolean
-}) {
-  return (
-    <div
-      className={cn(
-        "rounded-2xl px-3 py-3 ring-1",
-        warn ? "bg-amber-50 ring-amber-200" : "bg-stone-50 ring-stone-200"
-      )}
-    >
-      <p className="text-xs font-medium tracking-wide text-stone-500 uppercase">{label}</p>
-      <p className="font-heading mt-1 text-3xl tabular-nums text-stone-900">{value}</p>
-      <p className="mt-1 text-xs text-stone-500">{hint}</p>
-    </div>
-  )
-}
-
-function PersonStats({
+function DetailCard({
   title,
   tone,
   phm,
@@ -232,31 +210,26 @@ function PersonStats({
       <div className="flex items-center gap-2">
         <span
           className={cn(
-            "size-2.5 rounded-full",
+            "size-2 rounded-full",
             tone === "recipient" ? "bg-teal-700" : "bg-rose-700"
           )}
-          aria-hidden="true"
         />
-        <h3 className="font-heading text-lg text-stone-900">{title}</h3>
+        <h3 className="font-heading text-base text-stone-900">{title}</h3>
       </div>
-      <dl className="mt-3 grid grid-cols-2 gap-x-3 gap-y-2 text-sm">
+      <p className="font-heading mt-2 text-2xl tabular-nums text-stone-900">
+        {formatGrams(phm)}
+      </p>
+      <p className="mt-1 text-xs text-stone-500">BMI {formatBmi(bmi)}</p>
+      <div className="mt-3 grid grid-cols-2 gap-2 border-t border-stone-200 pt-2 text-xs">
         <div>
-          <dt className="text-stone-500">Heart mass</dt>
-          <dd className="font-medium tabular-nums text-stone-900">{formatGrams(phm)}</dd>
+          <p className="text-stone-500">LV</p>
+          <p className="tabular-nums text-stone-800">{formatGrams(lv)}</p>
         </div>
         <div>
-          <dt className="text-stone-500">BMI</dt>
-          <dd className="font-medium tabular-nums text-stone-900">{formatBmi(bmi)}</dd>
+          <p className="text-stone-500">RV</p>
+          <p className="tabular-nums text-stone-800">{formatGrams(rv)}</p>
         </div>
-        <div>
-          <dt className="text-stone-500">LV mass</dt>
-          <dd className="tabular-nums text-stone-700">{formatGrams(lv)}</dd>
-        </div>
-        <div>
-          <dt className="text-stone-500">RV mass</dt>
-          <dd className="tabular-nums text-stone-700">{formatGrams(rv)}</dd>
-        </div>
-      </dl>
+      </div>
     </div>
   )
 }

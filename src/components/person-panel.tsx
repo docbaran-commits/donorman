@@ -21,7 +21,7 @@ export type PersonDraft = PersonMetrics & {
 }
 
 const HEIGHT_UNITS: { id: HeightUnit; label: string }[] = [
-  { id: "ftin", label: "ft / in" },
+  { id: "ftin", label: "ft/in" },
   { id: "cm", label: "cm" },
   { id: "m", label: "m" },
 ]
@@ -30,6 +30,8 @@ const WEIGHT_UNITS: { id: WeightUnit; label: string }[] = [
   { id: "lb", label: "lb" },
   { id: "kg", label: "kg" },
 ]
+
+const FEET_OPTIONS = [4, 5, 6] as const
 
 export function PersonPanel({
   title,
@@ -43,58 +45,58 @@ export function PersonPanel({
   onChange: (next: PersonDraft) => void
 }) {
   const totalIn = mToTotalInches(value.heightM)
-  const { feet, inches } = splitFeetInches(totalIn)
+  const split = splitFeetInches(totalIn)
+  const feet = FEET_OPTIONS.includes(split.feet as (typeof FEET_OPTIONS)[number])
+    ? (split.feet as (typeof FEET_OPTIONS)[number])
+    : clamp(split.feet, 4, 6)
+  const inches = Math.round(split.inches * 2) / 2
   const cm = Math.round(mToCm(value.heightM))
   const lb = Math.round(kgToLb(value.weightKg))
   const kg = Math.round(value.weightKg)
   const age = Math.round(value.ageYears)
 
   const bar = accent === "recipient" ? "bg-teal-700" : "bg-rose-700"
-  const soft = accent === "recipient" ? "bg-teal-50" : "bg-rose-50"
+  const soft = accent === "recipient" ? "bg-teal-50/80" : "bg-rose-50/80"
   const ink = accent === "recipient" ? "text-teal-900" : "text-rose-950"
+  const chipOn =
+    accent === "recipient"
+      ? "bg-teal-700 text-white border-transparent"
+      : "bg-rose-700 text-white border-transparent"
 
   function patch(partial: Partial<PersonDraft>) {
     onChange({ ...value, ...partial })
   }
 
   function setHeightFromFeetInches(nextFeet: number, nextInches: number) {
-    const feetSafe = clamp(Math.round(nextFeet), 4, 7)
-    const inchesSafe = clamp(nextInches, 0, 11.9)
+    const feetSafe = clamp(Math.round(nextFeet), 4, 6)
+    const inchesSafe = clamp(nextInches, 0, 11.5)
     patch({ heightM: totalInchesToSafe(combineFeetInches(feetSafe, inchesSafe)) })
   }
 
   return (
-    <section className={cn("overflow-hidden rounded-3xl border shadow-sm", soft)}>
+    <section className={cn("overflow-hidden rounded-[1.75rem] border border-stone-200/80 shadow-sm", soft)}>
       <div className={cn("h-1.5 w-full", bar)} aria-hidden="true" />
-      <div className="space-y-5 px-4 py-4">
-        <header>
-          <h2 className={cn("font-heading text-2xl tracking-tight", ink)}>{title}</h2>
-          <p className="mt-1 text-sm text-stone-600">
-            Sex, age, height, and weight — units can differ. Type a number or drag the slider.
-          </p>
-        </header>
+      <div className="space-y-4 px-4 py-4">
+        <h2 className={cn("font-heading text-[1.65rem] leading-none tracking-tight", ink)}>
+          {title}
+        </h2>
 
-        <fieldset className="space-y-2">
-          <legend className="text-sm font-medium text-stone-800">Sex</legend>
-          <div className="grid grid-cols-2 gap-2">
-            {(["female", "male"] as Sex[]).map((sex) => (
-              <button
-                key={sex}
-                type="button"
-                aria-pressed={value.sex === sex}
-                onClick={() => patch({ sex })}
-                className={cn(
-                  "min-h-12 rounded-2xl border text-sm font-semibold capitalize transition-colors",
-                  value.sex === sex
-                    ? cn(bar, "border-transparent text-white")
-                    : "border-stone-300 bg-white text-stone-800"
-                )}
-              >
-                {sex}
-              </button>
-            ))}
-          </div>
-        </fieldset>
+        <div className="grid grid-cols-2 gap-2">
+          {(["female", "male"] as Sex[]).map((sex) => (
+            <button
+              key={sex}
+              type="button"
+              aria-pressed={value.sex === sex}
+              onClick={() => patch({ sex })}
+              className={cn(
+                "min-h-11 rounded-2xl border text-sm font-semibold capitalize transition-colors",
+                value.sex === sex ? chipOn : "border-stone-300 bg-white/90 text-stone-800"
+              )}
+            >
+              {sex}
+            </button>
+          ))}
+        </div>
 
         <NumberSliderField
           idPrefix={title}
@@ -107,9 +109,9 @@ export function PersonPanel({
           onChange={(ageYears) => patch({ ageYears: Math.round(ageYears) })}
         />
 
-        <div className="space-y-3">
-          <div className="flex items-end justify-between gap-3">
-            <p className="text-sm font-medium text-stone-800">Height</p>
+        <div className="space-y-3 rounded-2xl bg-white/70 p-3 ring-1 ring-stone-200/80">
+          <div className="flex items-center justify-between gap-2">
+            <p className="text-sm font-semibold text-stone-800">Height</p>
             <UnitTabs
               options={HEIGHT_UNITS}
               value={value.heightUnit}
@@ -119,16 +121,28 @@ export function PersonPanel({
 
           {value.heightUnit === "ftin" && (
             <div className="space-y-3">
-              <NumberSliderField
-                idPrefix={title}
-                label="Feet"
-                unit="ft"
-                min={4}
-                max={7}
-                step={1}
-                value={feet}
-                onChange={(nextFeet) => setHeightFromFeetInches(nextFeet, inches)}
-              />
+              <div className="space-y-2">
+                <p className="text-sm text-stone-600">Feet</p>
+                <div className="grid grid-cols-3 gap-2" role="radiogroup" aria-label={`${title} feet`}>
+                  {FEET_OPTIONS.map((option) => (
+                    <button
+                      key={option}
+                      type="button"
+                      role="radio"
+                      aria-checked={feet === option}
+                      onClick={() => setHeightFromFeetInches(option, inches)}
+                      className={cn(
+                        "min-h-12 rounded-2xl border text-base font-semibold tabular-nums transition-colors",
+                        feet === option
+                          ? chipOn
+                          : "border-stone-300 bg-white text-stone-800"
+                      )}
+                    >
+                      {option}′
+                    </button>
+                  ))}
+                </div>
+              </div>
               <NumberSliderField
                 idPrefix={title}
                 label="Inches"
@@ -136,7 +150,7 @@ export function PersonPanel({
                 min={0}
                 max={11.5}
                 step={0.5}
-                value={Math.round(inches * 2) / 2}
+                value={inches}
                 onChange={(nextInches) => setHeightFromFeetInches(feet, nextInches)}
               />
             </div>
@@ -169,9 +183,9 @@ export function PersonPanel({
           )}
         </div>
 
-        <div className="space-y-3">
-          <div className="flex items-end justify-between gap-3">
-            <p className="text-sm font-medium text-stone-800">Weight</p>
+        <div className="space-y-3 rounded-2xl bg-white/70 p-3 ring-1 ring-stone-200/80">
+          <div className="flex items-center justify-between gap-2">
+            <p className="text-sm font-semibold text-stone-800">Weight</p>
             <UnitTabs
               options={WEIGHT_UNITS}
               value={value.weightUnit}
@@ -226,7 +240,7 @@ function UnitTabs<T extends string>({
   onChange: (next: T) => void
 }) {
   return (
-    <div className="inline-flex rounded-full bg-white/80 p-1 ring-1 ring-stone-300">
+    <div className="inline-flex rounded-full bg-stone-100 p-1 ring-1 ring-stone-300">
       {options.map((option) => (
         <button
           key={option.id}
@@ -276,7 +290,7 @@ function NumberSliderField({
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between gap-3">
-        <label className="text-sm text-stone-700" htmlFor={fieldId}>
+        <label className="text-sm text-stone-600" htmlFor={fieldId}>
           {label}
         </label>
         <div className="flex items-center gap-1.5">
@@ -297,9 +311,9 @@ function NumberSliderField({
               const next = Number(event.target.value)
               commit(Number.isFinite(next) ? next : value)
             }}
-            className="h-11 w-[5.5rem] rounded-xl border border-stone-300 bg-white px-2 text-right font-heading text-lg tabular-nums text-stone-900 outline-none focus:border-stone-800 focus:ring-2 focus:ring-stone-800/20"
+            className="h-11 w-[5.25rem] rounded-xl border border-stone-300 bg-white px-2 text-right font-heading text-lg tabular-nums text-stone-900 outline-none focus:border-stone-800 focus:ring-2 focus:ring-stone-800/20"
           />
-          <span className="min-w-[1.75rem] text-sm font-medium text-stone-600">{unit}</span>
+          <span className="min-w-[1.5rem] text-sm font-medium text-stone-500">{unit}</span>
         </div>
       </div>
       <input
@@ -311,7 +325,7 @@ function NumberSliderField({
         value={clamp(value, min, max)}
         onInput={(event) => commit(Number((event.target as HTMLInputElement).value))}
         onChange={(event) => commit(Number(event.target.value))}
-        className="block h-11 w-full cursor-pointer accent-stone-900"
+        className="block h-10 w-full cursor-pointer accent-stone-900"
       />
     </div>
   )
