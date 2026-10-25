@@ -144,8 +144,21 @@ export function matchDonorRecipient(
   }
 }
 
-/** Common clinical threshold: donor/recipient PHM ratio &lt; 0.86 = severe undersize. */
+/** Common clinical threshold: donor/recipient PHM ratio &lt; 0.86 = undersize. */
 export const PHM_UNDERSIZE_RATIO = 0.86
+
+/** Deeper caution band: donor/recipient PHM ratio &lt; 0.75. */
+export const PHM_SEVERE_UNDERSIZE_RATIO = 0.75
+
+export type PhmRatioBand = "ok" | "caution" | "severe"
+
+/** ≥0.86 ok (green), 0.75–&lt;0.86 caution (yellow), &lt;0.75 severe (red). */
+export function phmRatioBand(ratio: number): PhmRatioBand {
+  if (!Number.isFinite(ratio)) return "severe"
+  if (ratio >= PHM_UNDERSIZE_RATIO) return "ok"
+  if (ratio >= PHM_SEVERE_UNDERSIZE_RATIO) return "caution"
+  return "severe"
+}
 
 export function isValidAdultMetrics(person: PersonMetrics) {
   if (person.sex !== "female" && person.sex !== "male") return false

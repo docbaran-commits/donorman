@@ -5,6 +5,7 @@ import {
   combineFeetInches,
   leftVentricularMassG,
   matchDonorRecipient,
+  phmRatioBand,
   predictedHeartMass,
   rightVentricularMassG,
   splitFeetInches,
@@ -79,5 +80,14 @@ describe("PHM", () => {
         match.recipient.predictedHeartMassG) *
       100
     assert.ok(Math.abs(match.phmPercentDifference - expectedPct) < 1e-9)
+  })
+
+  it("bands PHM ratio by 0.86 and 0.75 cutoffs", () => {
+    assert.equal(phmRatioBand(0.86), "ok")
+    assert.equal(phmRatioBand(1.0), "ok")
+    assert.equal(phmRatioBand(0.85), "caution")
+    assert.equal(phmRatioBand(0.75), "caution")
+    assert.equal(phmRatioBand(0.749), "severe")
+    assert.equal(phmRatioBand(0.5), "severe")
   })
 })

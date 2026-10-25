@@ -11,6 +11,7 @@ import {
   formatRatio,
   isValidAdultMetrics,
   matchDonorRecipient,
+  phmRatioBand,
 } from "@/lib/phm"
 import { cn } from "@/lib/cn"
 
@@ -38,7 +39,8 @@ export function MatchBoard() {
 
   const ready = isValidAdultMetrics(recipient) && isValidAdultMetrics(donor)
   const match = ready ? matchDonorRecipient(recipient, donor) : null
-  const undersized = match !== null && match.phmRatio < PHM_UNDERSIZE_RATIO
+  const band = match ? phmRatioBand(match.phmRatio) : null
+  const undersized = band === "caution" || band === "severe"
   const ratioPct = match ? Math.min(140, Math.max(0, match.phmRatio * 100)) : 0
 
   return (
@@ -53,7 +55,9 @@ export function MatchBoard() {
               <p
                 className={cn(
                   "text-[1.55rem] font-bold leading-none tabular-nums",
-                  undersized ? "text-amber-700" : "text-stone-900"
+                  band === "ok" && "text-emerald-700",
+                  band === "caution" && "text-amber-500",
+                  band === "severe" && "text-red-600"
                 )}
               >
                 {formatRatio(match.phmRatio)}
@@ -83,7 +87,14 @@ export function MatchBoard() {
             </div>
             <div className="flex items-center justify-between text-[0.75rem] font-medium text-stone-600">
               <span>{formatPercent(match.phmPercentDifference)}</span>
-              <span className={undersized ? "font-bold text-amber-800" : undefined}>
+              <span
+                className={cn(
+                  "font-bold",
+                  band === "ok" && "text-emerald-700",
+                  band === "caution" && "text-amber-600",
+                  band === "severe" && "text-red-600"
+                )}
+              >
                 {undersized ? `< ${PHM_UNDERSIZE_RATIO}` : `mark ${PHM_UNDERSIZE_RATIO}`}
               </span>
             </div>
