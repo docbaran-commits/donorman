@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useState } from "react"
 
 import { PersonPanel, type PersonDraft } from "@/components/person-panel"
 import {
@@ -36,21 +36,14 @@ export function MatchBoard() {
   const [recipient, setRecipient] = useState<PersonDraft>(defaultRecipient)
   const [donor, setDonor] = useState<PersonDraft>(defaultDonor)
 
-  const ready =
-    isValidAdultMetrics(recipient) && isValidAdultMetrics(donor)
-
-  const match = useMemo(
-    () => (ready ? matchDonorRecipient(recipient, donor) : null),
-    [recipient, donor, ready]
-  )
-
-  const undersized =
-    match !== null && match.phmRatio < PHM_UNDERSIZE_RATIO
+  const ready = isValidAdultMetrics(recipient) && isValidAdultMetrics(donor)
+  const match = ready ? matchDonorRecipient(recipient, donor) : null
+  const undersized = match !== null && match.phmRatio < PHM_UNDERSIZE_RATIO
 
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-lg flex-col">
       <header className="sticky top-0 z-20 border-b border-stone-200/80 bg-[#f3efe6]/95 pt-[env(safe-area-inset-top)] backdrop-blur-md">
-        <div className="px-4 pt-5 pb-4">
+        <div className="px-4 pt-5 pb-3">
           <p className="text-xs font-semibold tracking-[0.18em] text-teal-800 uppercase">
             Heart transplant sizing
           </p>
@@ -62,6 +55,34 @@ export function MatchBoard() {
             inputs.
           </p>
         </div>
+
+        {match && (
+          <div
+            className="border-t border-stone-200/80 bg-white/90 px-4 py-3"
+            aria-live="polite"
+          >
+            <div className="grid grid-cols-3 gap-2 text-center">
+              <LiveStat
+                label="Recipient PHM"
+                value={formatGrams(match.recipient.predictedHeartMassG)}
+              />
+              <LiveStat
+                label="Ratio"
+                value={formatRatio(match.phmRatio)}
+                warn={undersized}
+              />
+              <LiveStat
+                label="Donor PHM"
+                value={formatGrams(match.donor.predictedHeartMassG)}
+              />
+            </div>
+            <p className="mt-2 text-center text-xs text-stone-500">
+              {formatPercent(match.phmPercentDifference)} vs recipient · updates as you
+              change fields
+            </p>
+          </div>
+        )}
+
         <div className="grid h-1.5 grid-cols-2" aria-hidden="true">
           <div className="bg-teal-700" />
           <div className="bg-rose-700" />
@@ -79,7 +100,7 @@ export function MatchBoard() {
 
         {match && (
           <section className="rounded-3xl border border-stone-300 bg-white px-4 py-5 shadow-sm">
-            <h2 className="font-heading text-2xl text-stone-900">Match</h2>
+            <h2 className="font-heading text-2xl text-stone-900">Match detail</h2>
             <p className="mt-1 text-sm text-stone-600">
               PHM ratio and percent difference use adult MESA-based formulas.
             </p>
@@ -136,6 +157,32 @@ export function MatchBoard() {
           substitute for judgment or program policy.
         </p>
       </main>
+    </div>
+  )
+}
+
+function LiveStat({
+  label,
+  value,
+  warn,
+}: {
+  label: string
+  value: string
+  warn?: boolean
+}) {
+  return (
+    <div>
+      <p className="text-[0.65rem] font-medium tracking-wide text-stone-500 uppercase">
+        {label}
+      </p>
+      <p
+        className={cn(
+          "font-heading mt-0.5 text-lg tabular-nums",
+          warn ? "text-amber-800" : "text-stone-900"
+        )}
+      >
+        {value}
+      </p>
     </div>
   )
 }
