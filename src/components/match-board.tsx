@@ -66,44 +66,23 @@ export function MatchBoard() {
         </div>
 
         {match && (
-          <div className="space-y-2 bg-white/90 px-3 py-2.5" aria-live="polite">
-            <div className="grid grid-cols-2 gap-2">
-              <MassChip
-                label="Recipient"
-                mass={match.recipient.predictedHeartMassG}
-                bmi={match.recipient.bmi}
-                lv={match.recipient.leftVentricularMassG}
-                rv={match.recipient.rightVentricularMassG}
-                tone="recipient"
+          <div className="space-y-1 bg-white/90 px-3 py-2" aria-live="polite">
+            <div className="relative h-2.5 overflow-hidden rounded-full bg-stone-200">
+              <div
+                className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-teal-700 to-rose-700 transition-[width] duration-150"
+                style={{ width: `${ratioPct}%` }}
               />
-              <MassChip
-                label="Donor"
-                mass={match.donor.predictedHeartMassG}
-                bmi={match.donor.bmi}
-                lv={match.donor.leftVentricularMassG}
-                rv={match.donor.rightVentricularMassG}
-                tone="donor"
+              <div
+                className="absolute inset-y-0 w-0.5 bg-stone-900/70"
+                style={{ left: `${PHM_UNDERSIZE_RATIO * 100}%` }}
+                aria-hidden="true"
               />
             </div>
-
-            <div className="space-y-1">
-              <div className="relative h-2.5 overflow-hidden rounded-full bg-stone-200">
-                <div
-                  className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-teal-700 to-rose-700 transition-[width] duration-150"
-                  style={{ width: `${ratioPct}%` }}
-                />
-                <div
-                  className="absolute inset-y-0 w-0.5 bg-stone-900/70"
-                  style={{ left: `${PHM_UNDERSIZE_RATIO * 100}%` }}
-                  aria-hidden="true"
-                />
-              </div>
-              <div className="flex items-center justify-between text-[0.8rem] font-medium text-stone-600">
-                <span>{formatPercent(match.phmPercentDifference)}</span>
-                <span className={undersized ? "font-bold text-amber-800" : undefined}>
-                  {undersized ? `< ${PHM_UNDERSIZE_RATIO}` : `mark ${PHM_UNDERSIZE_RATIO}`}
-                </span>
-              </div>
+            <div className="flex items-center justify-between text-[0.8rem] font-medium text-stone-600">
+              <span>{formatPercent(match.phmPercentDifference)}</span>
+              <span className={undersized ? "font-bold text-amber-800" : undefined}>
+                {undersized ? `< ${PHM_UNDERSIZE_RATIO}` : `mark ${PHM_UNDERSIZE_RATIO}`}
+              </span>
             </div>
           </div>
         )}
@@ -114,7 +93,7 @@ export function MatchBoard() {
         </div>
       </header>
 
-      <main className="grid flex-1 grid-cols-1 gap-3 px-3 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:grid-cols-2">
+      <main className="grid flex-1 grid-cols-1 content-start gap-3 px-3 pt-3 sm:grid-cols-2">
         <PersonPanel
           title="Recipient"
           accent="recipient"
@@ -123,6 +102,29 @@ export function MatchBoard() {
         />
         <PersonPanel title="Donor" accent="donor" value={donor} onChange={setDonor} />
       </main>
+
+      {match && (
+        <footer className="sticky bottom-0 z-20 border-t border-stone-200/80 bg-[#efe8dc]/95 px-3 pt-2 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur-md">
+          <div className="grid grid-cols-2 gap-2">
+            <MassChip
+              label="Recipient"
+              mass={match.recipient.predictedHeartMassG}
+              bmi={match.recipient.bmi}
+              lv={match.recipient.leftVentricularMassG}
+              rv={match.recipient.rightVentricularMassG}
+              tone="recipient"
+            />
+            <MassChip
+              label="Donor"
+              mass={match.donor.predictedHeartMassG}
+              bmi={match.donor.bmi}
+              lv={match.donor.leftVentricularMassG}
+              rv={match.donor.rightVentricularMassG}
+              tone="donor"
+            />
+          </div>
+        </footer>
+      )}
     </div>
   )
 }
@@ -143,7 +145,7 @@ function MassChip({
   tone: "recipient" | "donor"
 }) {
   return (
-    <div className="rounded-xl bg-stone-50 px-2.5 py-2 ring-1 ring-stone-200">
+    <div className="rounded-xl bg-white/95 px-2.5 py-2 ring-1 ring-stone-200">
       <div className="flex items-center gap-1.5">
         <span
           className={cn(
