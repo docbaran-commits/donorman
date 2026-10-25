@@ -24,7 +24,7 @@ Open [http://127.0.0.1:43210](http://127.0.0.1:43210).
 
 ## GitHub Pages
 
-Pushing `main` runs `.github/workflows/pages.yml`.
+The live site is published from the `gh-pages` branch.
 
 Site: [https://docbaran-commits.github.io/donorman/](https://docbaran-commits.github.io/donorman/)
 
