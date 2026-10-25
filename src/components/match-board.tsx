@@ -44,21 +44,21 @@ export function MatchBoard() {
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-lg flex-col">
       <header className="sticky top-0 z-20 border-b border-stone-200/80 bg-[#efe8dc]/95 pt-[env(safe-area-inset-top)] backdrop-blur-md">
-        <div className="flex items-center justify-between gap-3 px-3 pt-3 pb-2">
-          <h1 className="font-heading text-[1.85rem] leading-none tracking-tight text-stone-900">
+        <div className="px-3 pt-2.5 pb-1.5 text-center">
+          <h1 className="font-heading text-[1.55rem] leading-none tracking-tight text-stone-900">
             DonorMan
           </h1>
           {match && (
-            <div className="text-right">
+            <div className="mt-1.5" aria-live="polite">
               <p
                 className={cn(
-                  "text-[1.55rem] font-bold leading-none tabular-nums",
+                  "text-[1.7rem] font-bold leading-none tabular-nums",
                   undersized ? "text-amber-700" : "text-stone-900"
                 )}
               >
                 {formatRatio(match.phmRatio)}
               </p>
-              <p className="text-[0.7rem] font-semibold tracking-wide text-stone-500 uppercase">
+              <p className="mt-0.5 text-[0.7rem] font-semibold tracking-wide text-stone-500 uppercase">
                 PHM ratio
               </p>
             </div>
@@ -66,8 +66,8 @@ export function MatchBoard() {
         </div>
 
         {match && (
-          <div className="space-y-1 bg-white/90 px-3 py-2" aria-live="polite">
-            <div className="relative h-2.5 overflow-hidden rounded-full bg-stone-200">
+          <div className="space-y-1 bg-white/90 px-3 py-1.5">
+            <div className="relative h-2 overflow-hidden rounded-full bg-stone-200">
               <div
                 className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-teal-700 to-rose-700 transition-[width] duration-150"
                 style={{ width: `${ratioPct}%` }}
@@ -78,7 +78,7 @@ export function MatchBoard() {
                 aria-hidden="true"
               />
             </div>
-            <div className="flex items-center justify-between text-[0.8rem] font-medium text-stone-600">
+            <div className="flex items-center justify-between text-[0.75rem] font-medium text-stone-600">
               <span>{formatPercent(match.phmPercentDifference)}</span>
               <span className={undersized ? "font-bold text-amber-800" : undefined}>
                 {undersized ? `< ${PHM_UNDERSIZE_RATIO}` : `mark ${PHM_UNDERSIZE_RATIO}`}

@@ -78,10 +78,24 @@ export function PersonPanel({
   return (
     <section className={cn("overflow-hidden rounded-2xl border border-stone-200/90 shadow-sm", soft)}>
       <div className={cn("h-1 w-full", bar)} aria-hidden="true" />
-      <div className="space-y-2.5 px-3 py-3">
-        <div className="flex items-center justify-between gap-2">
-          <h2 className={cn("text-[1.15rem] font-bold tracking-tight", ink)}>{title}</h2>
-          <div className="flex items-center gap-1.5" role="group" aria-label={`${title} sex`}>
+      <div className="space-y-2 px-2.5 py-2.5">
+        <div className="flex items-center gap-2">
+          <h2 className={cn("min-w-0 flex-1 truncate text-[1.05rem] font-bold tracking-tight", ink)}>
+            {title}
+          </h2>
+          <label className="flex items-center gap-1 text-[0.85rem] font-semibold text-stone-600">
+            Age
+            <TinyNumber
+              id={`${title}-age`}
+              min={18}
+              max={90}
+              step={1}
+              value={age}
+              onChange={(ageYears) => patch({ ageYears: Math.round(ageYears) })}
+              className="w-11"
+            />
+          </label>
+          <div className="flex items-center gap-1" role="group" aria-label={`${title} sex`}>
             {(
               [
                 { sex: "female" as const, label: "Female", Icon: FemaleIcon },
@@ -96,30 +110,19 @@ export function PersonPanel({
                 title={label}
                 onClick={() => patch({ sex })}
                 className={cn(
-                  "flex size-11 items-center justify-center rounded-xl border transition-colors",
+                  "flex size-9 items-center justify-center rounded-lg border transition-colors",
                   value.sex === sex ? chipOn : "border-stone-300 bg-white text-stone-700"
                 )}
               >
-                <Icon className="size-6" />
+                <Icon className="size-5" />
               </button>
             ))}
           </div>
         </div>
 
-        <CompactField
-          idPrefix={title}
-          label="Age"
-          unit="yr"
-          min={18}
-          max={90}
-          step={1}
-          value={age}
-          onChange={(ageYears) => patch({ ageYears: Math.round(ageYears) })}
-        />
-
-        <div className="space-y-2 rounded-xl bg-white/80 p-2.5 ring-1 ring-stone-200/90">
+        <div className="space-y-1.5 rounded-xl bg-white/80 p-2 ring-1 ring-stone-200/90">
           <div className="flex items-center justify-between gap-2">
-            <p className="text-[0.95rem] font-semibold text-stone-800">Height</p>
+            <p className="text-[0.95rem] font-bold text-stone-800">Ht</p>
             <UnitTabs
               options={HEIGHT_UNITS}
               value={value.heightUnit}
@@ -128,33 +131,53 @@ export function PersonPanel({
           </div>
 
           {value.heightUnit === "ftin" && (
-            <div className="space-y-2">
-              <div className="grid grid-cols-3 gap-1.5" role="radiogroup" aria-label={`${title} feet`}>
-                {FEET_OPTIONS.map((option) => (
-                  <button
-                    key={option}
-                    type="button"
-                    role="radio"
-                    aria-checked={feet === option}
-                    onClick={() => setHeightFromFeetInches(option, inches)}
-                    className={cn(
-                      "min-h-10 rounded-xl border text-[1.05rem] font-bold tabular-nums transition-colors",
-                      feet === option ? chipOn : "border-stone-300 bg-white text-stone-800"
-                    )}
-                  >
-                    {option}′
-                  </button>
-                ))}
+            <div className="space-y-1">
+              <div className="flex items-center gap-1.5">
+                <div
+                  className="flex shrink-0 gap-1"
+                  role="radiogroup"
+                  aria-label={`${title} feet`}
+                >
+                  {FEET_OPTIONS.map((option) => (
+                    <button
+                      key={option}
+                      type="button"
+                      role="radio"
+                      aria-checked={feet === option}
+                      onClick={() => setHeightFromFeetInches(option, inches)}
+                      className={cn(
+                        "size-9 rounded-lg border text-[0.95rem] font-bold tabular-nums transition-colors",
+                        feet === option ? chipOn : "border-stone-300 bg-white text-stone-800"
+                      )}
+                    >
+                      {option}
+                    </button>
+                  ))}
+                </div>
+                <span className="text-[0.85rem] font-semibold text-stone-500">ft</span>
+                <TinyNumber
+                  id={`${title}-inches`}
+                  min={0}
+                  max={11.5}
+                  step={0.5}
+                  value={inches}
+                  onChange={(nextInches) => setHeightFromFeetInches(feet, nextInches)}
+                  className="w-12"
+                />
+                <span className="text-[0.85rem] font-semibold text-stone-500">in</span>
               </div>
-              <CompactField
-                idPrefix={title}
-                label="In"
-                unit="in"
+              <input
+                type="range"
+                aria-label={`${title} inches`}
                 min={0}
                 max={11.5}
                 step={0.5}
                 value={inches}
-                onChange={(nextInches) => setHeightFromFeetInches(feet, nextInches)}
+                onInput={(event) =>
+                  setHeightFromFeetInches(feet, Number((event.target as HTMLInputElement).value))
+                }
+                onChange={(event) => setHeightFromFeetInches(feet, Number(event.target.value))}
+                className="block h-7 w-full cursor-pointer accent-stone-900"
               />
             </div>
           )}
@@ -186,9 +209,9 @@ export function PersonPanel({
           )}
         </div>
 
-        <div className="space-y-2 rounded-xl bg-white/80 p-2.5 ring-1 ring-stone-200/90">
+        <div className="space-y-1.5 rounded-xl bg-white/80 p-2 ring-1 ring-stone-200/90">
           <div className="flex items-center justify-between gap-2">
-            <p className="text-[0.95rem] font-semibold text-stone-800">Weight</p>
+            <p className="text-[0.95rem] font-bold text-stone-800">Wt</p>
             <UnitTabs
               options={WEIGHT_UNITS}
               value={value.weightUnit}
@@ -251,7 +274,7 @@ function UnitTabs<T extends string>({
           aria-pressed={value === option.id}
           onClick={() => onChange(option.id)}
           className={cn(
-            "rounded-full px-2 py-1 text-[0.8rem] font-bold transition-colors",
+            "rounded-full px-2 py-0.5 text-[0.75rem] font-bold transition-colors",
             value === option.id ? "bg-stone-900 text-white" : "text-stone-600"
           )}
         >
@@ -268,6 +291,71 @@ function formatFieldValue(value: number, step: number) {
   const rounded = Math.round(value / step) * step
   if (step >= 0.1) return Number(rounded.toFixed(1)).toString()
   return Number(rounded.toFixed(2)).toString()
+}
+
+function TinyNumber({
+  id,
+  min,
+  max,
+  step,
+  value,
+  onChange,
+  className,
+}: {
+  id: string
+  min: number
+  max: number
+  step: number
+  value: number
+  onChange: (next: number) => void
+  className?: string
+}) {
+  const [draft, setDraft] = useState<string | null>(null)
+
+  function commit(raw: number) {
+    if (!Number.isFinite(raw)) return
+    onChange(clamp(raw, min, max))
+  }
+
+  function parseDraft(text: string) {
+    const trimmed = text.trim()
+    if (trimmed === "" || trimmed === "-" || trimmed === ".") return null
+    const next = Number(trimmed)
+    return Number.isFinite(next) ? next : null
+  }
+
+  return (
+    <input
+      id={id}
+      type="text"
+      inputMode="decimal"
+      enterKeyHint="done"
+      autoComplete="off"
+      value={draft ?? formatFieldValue(value, step)}
+      onFocus={(event) => {
+        setDraft(formatFieldValue(value, step))
+        event.currentTarget.select()
+      }}
+      onChange={(event) => {
+        const text = event.target.value.replace(/[^\d.-]/g, "")
+        setDraft(text)
+        const parsed = parseDraft(text)
+        if (parsed !== null) commit(parsed)
+      }}
+      onBlur={() => {
+        const parsed = parseDraft(draft ?? "")
+        commit(parsed ?? value)
+        setDraft(null)
+      }}
+      onKeyDown={(event) => {
+        if (event.key === "Enter") event.currentTarget.blur()
+      }}
+      className={cn(
+        "h-9 rounded-lg border border-stone-300 bg-white px-1.5 text-center text-[1.05rem] font-bold tabular-nums text-stone-900 outline-none focus:border-stone-800 focus:ring-2 focus:ring-stone-800/20",
+        className
+      )}
+    />
+  )
 }
 
 function CompactField({
@@ -309,7 +397,7 @@ function CompactField({
   return (
     <div className="space-y-1">
       <div className="flex items-center gap-2">
-        <label className="min-w-[2.25rem] text-[0.95rem] font-semibold text-stone-700" htmlFor={fieldId}>
+        <label className="min-w-[1.75rem] text-[0.9rem] font-semibold text-stone-700" htmlFor={fieldId}>
           {label}
         </label>
         <input
@@ -339,9 +427,9 @@ function CompactField({
           onKeyDown={(event) => {
             if (event.key === "Enter") event.currentTarget.blur()
           }}
-          className="h-10 min-w-0 flex-1 rounded-lg border border-stone-300 bg-white px-2 text-right text-[1.15rem] font-semibold tabular-nums text-stone-900 outline-none focus:border-stone-800 focus:ring-2 focus:ring-stone-800/20"
+          className="h-9 min-w-0 flex-1 rounded-lg border border-stone-300 bg-white px-2 text-right text-[1.1rem] font-semibold tabular-nums text-stone-900 outline-none focus:border-stone-800 focus:ring-2 focus:ring-stone-800/20"
         />
-        <span className="w-7 text-[0.9rem] font-semibold text-stone-500">{unit}</span>
+        <span className="w-7 text-[0.85rem] font-semibold text-stone-500">{unit}</span>
       </div>
       <input
         type="range"
@@ -360,7 +448,7 @@ function CompactField({
           commit(next)
           if (draft !== null) setDraft(formatFieldValue(next, step))
         }}
-        className="block h-8 w-full cursor-pointer accent-stone-900"
+        className="block h-7 w-full cursor-pointer accent-stone-900"
       />
     </div>
   )
