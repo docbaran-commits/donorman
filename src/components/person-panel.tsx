@@ -1,5 +1,7 @@
 "use client"
 
+import { useState } from "react"
+
 import {
   cmToM,
   combineFeetInches,
@@ -259,6 +261,16 @@ function UnitTabs<T extends string>({
   )
 }
 
+function formatFieldValue(value: number, step: number) {
+  if (!Number.isFinite(value)) return ""
+  if (Number.isInteger(step)) return String(Math.round(value))
+  const rounded = Math.round(value / step) * step
+  if (step >= 0.1) {
+    return Number(rounded.toFixed(1)).toString()
+  }
+  return Number(rounded.toFixed(2)).toString()
+}
+
 function NumberSliderField({
   idPrefix,
   label,
@@ -279,13 +291,21 @@ function NumberSliderField({
   onChange: (next: number) => void
 }) {
   const fieldId = `${idPrefix}-${label}`.toLowerCase().replace(/\s+/g, "-")
+  const [draft, setDraft] = useState<string | null>(null)
 
   function commit(raw: number) {
     if (!Number.isFinite(raw)) return
     onChange(clamp(raw, min, max))
   }
 
-  const shown = Number.isInteger(step) ? Math.round(value) : value
+  function parseDraft(text: string) {
+    const trimmed = text.trim()
+    if (trimmed === "" || trimmed === "-" || trimmed === ".") return null
+    const next = Number(trimmed)
+    return Number.isFinite(next) ? next : null
+  }
+
+  const display = draft ?? formatFieldValue(value, step)
 
   return (
     <div className="space-y-2">
@@ -296,26 +316,42 @@ function NumberSliderField({
         <div className="flex items-center gap-1.5">
           <input
             id={fieldId}
-            type="number"
+            type="text"
             inputMode="decimal"
-            min={min}
-            max={max}
-            step={step}
-            value={shown}
+            enterKeyHint="done"
+            autoComplete="off"
+            autoCorrect="off"
+            spellCheck={false}
+            value={display}
+            onFocus={(event) => {
+              setDraft(formatFieldValue(value, step))
+              event.currentTarget.select()
+            }}
             onChange={(event) => {
-              const next = Number(event.target.value)
-              if (event.target.value === "" || !Number.isFinite(next)) return
-              commit(next)
+              const text = event.target.value.replace(/[^\d.-]/g, "")
+              setDraft(text)
+              const parsed = parseDraft(text)
+              if (parsed !== null) commit(parsed)
             }}
-            onBlur={(event) => {
-              const next = Number(event.target.value)
-              commit(Number.isFinite(next) ? next : value)
+            onBlur={() => {
+              const parsed = parseDraft(draft ?? "")
+              commit(parsed ?? value)
+              setDraft(null)
             }}
-            className="h-11 w-[5.25rem] rounded-xl border border-stone-300 bg-white px-2 text-right font-heading text-lg tabular-nums text-stone-900 outline-none focus:border-stone-800 focus:ring-2 focus:ring-stone-800/20"
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                event.currentTarget.blur()
+              }
+            }}
+            className="h-12 w-[6rem] rounded-xl border border-stone-300 bg-white px-2.5 text-right font-heading text-xl tabular-nums text-stone-900 shadow-sm outline-none focus:border-stone-800 focus:ring-2 focus:ring-stone-800/20"
+            aria-describedby={`${fieldId}-hint`}
           />
           <span className="min-w-[1.5rem] text-sm font-medium text-stone-500">{unit}</span>
         </div>
       </div>
+      <p id={`${fieldId}-hint`} className="sr-only">
+        Tap the number to type, or use the slider.
+      </p>
       <input
         type="range"
         aria-label={`${idPrefix} ${label}`}
@@ -323,8 +359,16 @@ function NumberSliderField({
         max={max}
         step={step}
         value={clamp(value, min, max)}
-        onInput={(event) => commit(Number((event.target as HTMLInputElement).value))}
-        onChange={(event) => commit(Number(event.target.value))}
+        onInput={(event) => {
+          const next = Number((event.target as HTMLInputElement).value)
+          commit(next)
+          if (draft !== null) setDraft(formatFieldValue(next, step))
+        }}
+        onChange={(event) => {
+          const next = Number(event.target.value)
+          commit(next)
+          if (draft !== null) setDraft(formatFieldValue(next, step))
+        }}
         className="block h-10 w-full cursor-pointer accent-stone-900"
       />
     </div>
