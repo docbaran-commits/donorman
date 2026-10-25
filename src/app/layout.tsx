@@ -1,14 +1,15 @@
 import type { Metadata, Viewport } from "next"
-import { Fraunces, Source_Sans_3 } from "next/font/google"
+import { Fraunces, IBM_Plex_Sans } from "next/font/google"
 import Script from "next/script"
 
 import { PwaRegister } from "@/components/pwa-register"
 
 import "./globals.css"
 
-const sourceSans = Source_Sans_3({
+const plexSans = IBM_Plex_Sans({
   variable: "--font-sans",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 })
 
 const fraunces = Fraunces({
@@ -51,9 +52,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${sourceSans.variable} ${fraunces.variable} h-full antialiased`}
+      className={`${plexSans.variable} ${fraunces.variable} h-full antialiased`}
     >
-      <body className="min-h-dvh">
+      <body className="min-h-dvh text-[16px] leading-snug tracking-[0.01em]">
         <Script id="theme-boot" strategy="beforeInteractive">
           {themeBoot}
         </Script>

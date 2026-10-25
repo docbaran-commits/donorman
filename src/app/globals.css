@@ -22,11 +22,20 @@ body {
     radial-gradient(800px 380px at 100% 0%, rgba(190, 18, 60, 0.1), transparent 50%),
     linear-gradient(180deg, #f4efe6 0%, #ebe4d8 100%);
   color: var(--foreground);
-  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-sans), "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 .font-heading {
   font-family: var(--font-heading), ui-serif, Georgia, serif;
+}
+
+/* Keep typed values readable on iPhone without zooming */
+input[type="text"],
+input[type="number"] {
+  font-size: 16px;
+  font-weight: 600;
 }
 
 input[type="range"] {

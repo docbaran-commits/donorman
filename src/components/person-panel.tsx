@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 
+import { FemaleIcon, MaleIcon } from "@/components/sex-icons"
 import {
   cmToM,
   combineFeetInches,
@@ -58,7 +59,7 @@ export function PersonPanel({
   const age = Math.round(value.ageYears)
 
   const bar = accent === "recipient" ? "bg-teal-700" : "bg-rose-700"
-  const soft = accent === "recipient" ? "bg-teal-50/80" : "bg-rose-50/80"
+  const soft = accent === "recipient" ? "bg-teal-50/90" : "bg-rose-50/90"
   const ink = accent === "recipient" ? "text-teal-900" : "text-rose-950"
   const chipOn =
     accent === "recipient"
@@ -76,31 +77,37 @@ export function PersonPanel({
   }
 
   return (
-    <section className={cn("overflow-hidden rounded-[1.75rem] border border-stone-200/80 shadow-sm", soft)}>
-      <div className={cn("h-1.5 w-full", bar)} aria-hidden="true" />
-      <div className="space-y-4 px-4 py-4">
-        <h2 className={cn("font-heading text-[1.65rem] leading-none tracking-tight", ink)}>
-          {title}
-        </h2>
-
-        <div className="grid grid-cols-2 gap-2">
-          {(["female", "male"] as Sex[]).map((sex) => (
-            <button
-              key={sex}
-              type="button"
-              aria-pressed={value.sex === sex}
-              onClick={() => patch({ sex })}
-              className={cn(
-                "min-h-11 rounded-2xl border text-sm font-semibold capitalize transition-colors",
-                value.sex === sex ? chipOn : "border-stone-300 bg-white/90 text-stone-800"
-              )}
-            >
-              {sex}
-            </button>
-          ))}
+    <section className={cn("overflow-hidden rounded-2xl border border-stone-200/90 shadow-sm", soft)}>
+      <div className={cn("h-1 w-full", bar)} aria-hidden="true" />
+      <div className="space-y-2.5 px-3 py-3">
+        <div className="flex items-center justify-between gap-2">
+          <h2 className={cn("text-[1.15rem] font-bold tracking-tight", ink)}>{title}</h2>
+          <div className="flex items-center gap-1.5" role="group" aria-label={`${title} sex`}>
+            {(
+              [
+                { sex: "female" as const, label: "Female", Icon: FemaleIcon },
+                { sex: "male" as const, label: "Male", Icon: MaleIcon },
+              ] as const
+            ).map(({ sex, label, Icon }) => (
+              <button
+                key={sex}
+                type="button"
+                aria-label={label}
+                aria-pressed={value.sex === sex}
+                title={label}
+                onClick={() => patch({ sex })}
+                className={cn(
+                  "flex size-11 items-center justify-center rounded-xl border transition-colors",
+                  value.sex === sex ? chipOn : "border-stone-300 bg-white text-stone-700"
+                )}
+              >
+                <Icon className="size-6" />
+              </button>
+            ))}
+          </div>
         </div>
 
-        <NumberSliderField
+        <CompactField
           idPrefix={title}
           label="Age"
           unit="yr"
@@ -111,9 +118,9 @@ export function PersonPanel({
           onChange={(ageYears) => patch({ ageYears: Math.round(ageYears) })}
         />
 
-        <div className="space-y-3 rounded-2xl bg-white/70 p-3 ring-1 ring-stone-200/80">
+        <div className="space-y-2 rounded-xl bg-white/80 p-2.5 ring-1 ring-stone-200/90">
           <div className="flex items-center justify-between gap-2">
-            <p className="text-sm font-semibold text-stone-800">Height</p>
+            <p className="text-[0.95rem] font-semibold text-stone-800">Height</p>
             <UnitTabs
               options={HEIGHT_UNITS}
               value={value.heightUnit}
@@ -122,32 +129,27 @@ export function PersonPanel({
           </div>
 
           {value.heightUnit === "ftin" && (
-            <div className="space-y-3">
-              <div className="space-y-2">
-                <p className="text-sm text-stone-600">Feet</p>
-                <div className="grid grid-cols-3 gap-2" role="radiogroup" aria-label={`${title} feet`}>
-                  {FEET_OPTIONS.map((option) => (
-                    <button
-                      key={option}
-                      type="button"
-                      role="radio"
-                      aria-checked={feet === option}
-                      onClick={() => setHeightFromFeetInches(option, inches)}
-                      className={cn(
-                        "min-h-12 rounded-2xl border text-base font-semibold tabular-nums transition-colors",
-                        feet === option
-                          ? chipOn
-                          : "border-stone-300 bg-white text-stone-800"
-                      )}
-                    >
-                      {option}′
-                    </button>
-                  ))}
-                </div>
+            <div className="space-y-2">
+              <div className="grid grid-cols-3 gap-1.5" role="radiogroup" aria-label={`${title} feet`}>
+                {FEET_OPTIONS.map((option) => (
+                  <button
+                    key={option}
+                    type="button"
+                    role="radio"
+                    aria-checked={feet === option}
+                    onClick={() => setHeightFromFeetInches(option, inches)}
+                    className={cn(
+                      "min-h-10 rounded-xl border text-[1.05rem] font-bold tabular-nums transition-colors",
+                      feet === option ? chipOn : "border-stone-300 bg-white text-stone-800"
+                    )}
+                  >
+                    {option}′
+                  </button>
+                ))}
               </div>
-              <NumberSliderField
+              <CompactField
                 idPrefix={title}
-                label="Inches"
+                label="In"
                 unit="in"
                 min={0}
                 max={11.5}
@@ -159,9 +161,9 @@ export function PersonPanel({
           )}
 
           {value.heightUnit === "cm" && (
-            <NumberSliderField
+            <CompactField
               idPrefix={title}
-              label="Centimeters"
+              label="Cm"
               unit="cm"
               min={140}
               max={210}
@@ -172,9 +174,9 @@ export function PersonPanel({
           )}
 
           {value.heightUnit === "m" && (
-            <NumberSliderField
+            <CompactField
               idPrefix={title}
-              label="Meters"
+              label="M"
               unit="m"
               min={1.4}
               max={2.1}
@@ -185,9 +187,9 @@ export function PersonPanel({
           )}
         </div>
 
-        <div className="space-y-3 rounded-2xl bg-white/70 p-3 ring-1 ring-stone-200/80">
+        <div className="space-y-2 rounded-xl bg-white/80 p-2.5 ring-1 ring-stone-200/90">
           <div className="flex items-center justify-between gap-2">
-            <p className="text-sm font-semibold text-stone-800">Weight</p>
+            <p className="text-[0.95rem] font-semibold text-stone-800">Weight</p>
             <UnitTabs
               options={WEIGHT_UNITS}
               value={value.weightUnit}
@@ -196,9 +198,9 @@ export function PersonPanel({
           </div>
 
           {value.weightUnit === "lb" ? (
-            <NumberSliderField
+            <CompactField
               idPrefix={title}
-              label="Pounds"
+              label="Lb"
               unit="lb"
               min={80}
               max={400}
@@ -207,9 +209,9 @@ export function PersonPanel({
               onChange={(nextLb) => patch({ weightKg: lbToKg(Math.round(nextLb)) })}
             />
           ) : (
-            <NumberSliderField
+            <CompactField
               idPrefix={title}
-              label="Kilograms"
+              label="Kg"
               unit="kg"
               min={35}
               max={180}
@@ -242,7 +244,7 @@ function UnitTabs<T extends string>({
   onChange: (next: T) => void
 }) {
   return (
-    <div className="inline-flex rounded-full bg-stone-100 p-1 ring-1 ring-stone-300">
+    <div className="inline-flex rounded-full bg-stone-100 p-0.5 ring-1 ring-stone-300">
       {options.map((option) => (
         <button
           key={option.id}
@@ -250,7 +252,7 @@ function UnitTabs<T extends string>({
           aria-pressed={value === option.id}
           onClick={() => onChange(option.id)}
           className={cn(
-            "rounded-full px-2.5 py-1 text-xs font-semibold transition-colors",
+            "rounded-full px-2 py-1 text-[0.8rem] font-bold transition-colors",
             value === option.id ? "bg-stone-900 text-white" : "text-stone-600"
           )}
         >
@@ -265,13 +267,11 @@ function formatFieldValue(value: number, step: number) {
   if (!Number.isFinite(value)) return ""
   if (Number.isInteger(step)) return String(Math.round(value))
   const rounded = Math.round(value / step) * step
-  if (step >= 0.1) {
-    return Number(rounded.toFixed(1)).toString()
-  }
+  if (step >= 0.1) return Number(rounded.toFixed(1)).toString()
   return Number(rounded.toFixed(2)).toString()
 }
 
-function NumberSliderField({
+function CompactField({
   idPrefix,
   label,
   unit,
@@ -308,50 +308,42 @@ function NumberSliderField({
   const display = draft ?? formatFieldValue(value, step)
 
   return (
-    <div className="space-y-2">
-      <div className="flex items-center justify-between gap-3">
-        <label className="text-sm text-stone-600" htmlFor={fieldId}>
+    <div className="space-y-1">
+      <div className="flex items-center gap-2">
+        <label className="min-w-[2.25rem] text-[0.95rem] font-semibold text-stone-700" htmlFor={fieldId}>
           {label}
         </label>
-        <div className="flex items-center gap-1.5">
-          <input
-            id={fieldId}
-            type="text"
-            inputMode="decimal"
-            enterKeyHint="done"
-            autoComplete="off"
-            autoCorrect="off"
-            spellCheck={false}
-            value={display}
-            onFocus={(event) => {
-              setDraft(formatFieldValue(value, step))
-              event.currentTarget.select()
-            }}
-            onChange={(event) => {
-              const text = event.target.value.replace(/[^\d.-]/g, "")
-              setDraft(text)
-              const parsed = parseDraft(text)
-              if (parsed !== null) commit(parsed)
-            }}
-            onBlur={() => {
-              const parsed = parseDraft(draft ?? "")
-              commit(parsed ?? value)
-              setDraft(null)
-            }}
-            onKeyDown={(event) => {
-              if (event.key === "Enter") {
-                event.currentTarget.blur()
-              }
-            }}
-            className="h-12 w-[6rem] rounded-xl border border-stone-300 bg-white px-2.5 text-right font-heading text-xl tabular-nums text-stone-900 shadow-sm outline-none focus:border-stone-800 focus:ring-2 focus:ring-stone-800/20"
-            aria-describedby={`${fieldId}-hint`}
-          />
-          <span className="min-w-[1.5rem] text-sm font-medium text-stone-500">{unit}</span>
-        </div>
+        <input
+          id={fieldId}
+          type="text"
+          inputMode="decimal"
+          enterKeyHint="done"
+          autoComplete="off"
+          autoCorrect="off"
+          spellCheck={false}
+          value={display}
+          onFocus={(event) => {
+            setDraft(formatFieldValue(value, step))
+            event.currentTarget.select()
+          }}
+          onChange={(event) => {
+            const text = event.target.value.replace(/[^\d.-]/g, "")
+            setDraft(text)
+            const parsed = parseDraft(text)
+            if (parsed !== null) commit(parsed)
+          }}
+          onBlur={() => {
+            const parsed = parseDraft(draft ?? "")
+            commit(parsed ?? value)
+            setDraft(null)
+          }}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") event.currentTarget.blur()
+          }}
+          className="h-10 min-w-0 flex-1 rounded-lg border border-stone-300 bg-white px-2 text-right text-[1.15rem] font-semibold tabular-nums text-stone-900 outline-none focus:border-stone-800 focus:ring-2 focus:ring-stone-800/20"
+        />
+        <span className="w-7 text-[0.9rem] font-semibold text-stone-500">{unit}</span>
       </div>
-      <p id={`${fieldId}-hint`} className="sr-only">
-        Tap the number to type, or use the slider.
-      </p>
       <input
         type="range"
         aria-label={`${idPrefix} ${label}`}
@@ -369,7 +361,7 @@ function NumberSliderField({
           commit(next)
           if (draft !== null) setDraft(formatFieldValue(next, step))
         }}
-        className="block h-10 w-full cursor-pointer accent-stone-900"
+        className="block h-8 w-full cursor-pointer accent-stone-900"
       />
     </div>
   )
