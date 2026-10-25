@@ -13,7 +13,6 @@ import {
   splitFeetInches,
   type HeightUnit,
   type PersonMetrics,
-  type Sex,
   type WeightUnit,
 } from "@/lib/phm"
 import { cn } from "@/lib/cn"
