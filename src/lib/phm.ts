@@ -1,0 +1,183 @@
+/** Predicted Heart Mass (adult) — UNOS / ISHLT / MESA-based formulas. */
+
+export type Sex = "female" | "male"
+export type HeightUnit = "ftin" | "cm" | "m"
+export type WeightUnit = "lb" | "kg"
+
+export type PersonMetrics = {
+  sex: Sex
+  ageYears: number
+  /** Height in meters (canonical). */
+  heightM: number
+  /** Weight in kilograms (canonical). */
+  weightKg: number
+}
+
+export type PhmBreakdown = {
+  leftVentricularMassG: number
+  rightVentricularMassG: number
+  predictedHeartMassG: number
+  bmi: number
+}
+
+export type MatchResult = {
+  recipient: PhmBreakdown
+  donor: PhmBreakdown
+  /** donor PHM / recipient PHM */
+  phmRatio: number
+  /** ((donor − recipient) / recipient) × 100 — UNOS online calculator convention */
+  phmPercentDifference: number
+}
+
+const LB_PER_KG = 2.2046226218
+const IN_PER_M = 39.37007874
+
+export function kgToLb(kg: number) {
+  return kg * LB_PER_KG
+}
+
+export function lbToKg(lb: number) {
+  return lb / LB_PER_KG
+}
+
+export function mToCm(m: number) {
+  return m * 100
+}
+
+export function cmToM(cm: number) {
+  return cm / 100
+}
+
+export function mToTotalInches(m: number) {
+  return m * IN_PER_M
+}
+
+export function totalInchesToM(inches: number) {
+  return inches / IN_PER_M
+}
+
+export function splitFeetInches(totalInches: number) {
+  const clamped = Math.max(0, totalInches)
+  let feet = Math.floor(clamped / 12)
+  let inches = clamped - feet * 12
+  // Keep inches in [0, 12) for display; allow 12.0 only as 1 ft bump when rounding.
+  if (inches >= 11.999) {
+    feet += 1
+    inches = 0
+  }
+  return { feet, inches }
+}
+
+export function combineFeetInches(feet: number, inches: number) {
+  return feet * 12 + inches
+}
+
+export function bodyMassIndex(heightM: number, weightKg: number) {
+  if (heightM <= 0) return NaN
+  return weightKg / (heightM * heightM)
+}
+
+/**
+ * Left ventricular mass (g) from Bluemke et al. / MESA.
+ * Height in meters, weight in kg.
+ */
+export function leftVentricularMassG(sex: Sex, heightM: number, weightKg: number) {
+  const a = sex === "female" ? 6.82 : 8.25
+  return a * heightM ** 0.54 * weightKg ** 0.61
+}
+
+/**
+ * Right ventricular mass (g) from Kawut et al. / MESA-RV.
+ * Age in years, height in meters, weight in kg.
+ */
+export function rightVentricularMassG(
+  sex: Sex,
+  ageYears: number,
+  heightM: number,
+  weightKg: number
+) {
+  const a = sex === "female" ? 10.59 : 11.25
+  return a * ageYears ** -0.32 * heightM ** 1.135 * weightKg ** 0.315
+}
+
+export function predictedHeartMass(person: PersonMetrics): PhmBreakdown {
+  const leftVentricularMassGValue = leftVentricularMassG(
+    person.sex,
+    person.heightM,
+    person.weightKg
+  )
+  const rightVentricularMassGValue = rightVentricularMassG(
+    person.sex,
+    person.ageYears,
+    person.heightM,
+    person.weightKg
+  )
+  return {
+    leftVentricularMassG: leftVentricularMassGValue,
+    rightVentricularMassG: rightVentricularMassGValue,
+    predictedHeartMassG: leftVentricularMassGValue + rightVentricularMassGValue,
+    bmi: bodyMassIndex(person.heightM, person.weightKg),
+  }
+}
+
+export function matchDonorRecipient(
+  recipient: PersonMetrics,
+  donor: PersonMetrics
+): MatchResult {
+  const recipientBreakdown = predictedHeartMass(recipient)
+  const donorBreakdown = predictedHeartMass(donor)
+  const phmRatio =
+    recipientBreakdown.predictedHeartMassG > 0
+      ? donorBreakdown.predictedHeartMassG / recipientBreakdown.predictedHeartMassG
+      : NaN
+  const phmPercentDifference =
+    recipientBreakdown.predictedHeartMassG > 0
+      ? ((donorBreakdown.predictedHeartMassG - recipientBreakdown.predictedHeartMassG) /
+          recipientBreakdown.predictedHeartMassG) *
+        100
+      : NaN
+  return {
+    recipient: recipientBreakdown,
+    donor: donorBreakdown,
+    phmRatio,
+    phmPercentDifference,
+  }
+}
+
+/** Common clinical threshold: donor/recipient PHM ratio &lt; 0.86 = severe undersize. */
+export const PHM_UNDERSIZE_RATIO = 0.86
+
+export function isValidAdultMetrics(person: PersonMetrics) {
+  if (person.sex !== "female" && person.sex !== "male") return false
+  if (!Number.isFinite(person.ageYears) || person.ageYears < 18 || person.ageYears > 100) {
+    return false
+  }
+  if (!Number.isFinite(person.heightM) || person.heightM < 1.2 || person.heightM > 2.3) {
+    return false
+  }
+  if (!Number.isFinite(person.weightKg) || person.weightKg < 30 || person.weightKg > 250) {
+    return false
+  }
+  return true
+}
+
+export function formatGrams(g: number) {
+  if (!Number.isFinite(g)) return "—"
+  return `${g.toFixed(0)} g`
+}
+
+export function formatBmi(bmi: number) {
+  if (!Number.isFinite(bmi)) return "—"
+  return bmi.toFixed(1)
+}
+
+export function formatRatio(ratio: number) {
+  if (!Number.isFinite(ratio)) return "—"
+  return ratio.toFixed(2)
+}
+
+export function formatPercent(pct: number) {
+  if (!Number.isFinite(pct)) return "—"
+  const sign = pct > 0 ? "+" : ""
+  return `${sign}${pct.toFixed(1)}%`
+}
