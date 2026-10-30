@@ -3,9 +3,11 @@ import { describe, it } from "node:test"
 import {
   bodyMassIndex,
   combineFeetInches,
+  isValidAdultMetrics,
   leftVentricularMassG,
   matchDonorRecipient,
   phmRatioBand,
+  phmSizeCaution,
   predictedHeartMass,
   rightVentricularMassG,
   splitFeetInches,
@@ -82,12 +84,33 @@ describe("PHM", () => {
     assert.ok(Math.abs(match.phmPercentDifference - expectedPct) < 1e-9)
   })
 
-  it("bands PHM ratio by 0.86 and 0.75 cutoffs", () => {
+  it("bands PHM ratio by 0.86 / 1.2 and 0.75 cutoffs", () => {
     assert.equal(phmRatioBand(0.86), "ok")
     assert.equal(phmRatioBand(1.0), "ok")
+    assert.equal(phmRatioBand(1.2), "ok")
     assert.equal(phmRatioBand(0.85), "caution")
     assert.equal(phmRatioBand(0.75), "caution")
+    assert.equal(phmRatioBand(1.21), "caution")
     assert.equal(phmRatioBand(0.749), "severe")
     assert.equal(phmRatioBand(0.5), "severe")
+  })
+
+  it("labels undersized and oversized PHM caution", () => {
+    assert.equal(phmSizeCaution(0.85), "undersized")
+    assert.equal(phmSizeCaution(0.86), null)
+    assert.equal(phmSizeCaution(1.2), null)
+    assert.equal(phmSizeCaution(1.21), "oversized")
+  })
+
+  it("accepts ages from 5 to 80", () => {
+    const base = {
+      sex: "female" as const,
+      heightM: 1.4,
+      weightKg: 40,
+    }
+    assert.equal(isValidAdultMetrics({ ...base, ageYears: 5 }), true)
+    assert.equal(isValidAdultMetrics({ ...base, ageYears: 80 }), true)
+    assert.equal(isValidAdultMetrics({ ...base, ageYears: 4 }), false)
+    assert.equal(isValidAdultMetrics({ ...base, ageYears: 81 }), false)
   })
 })

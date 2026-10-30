@@ -87,8 +87,8 @@ export function PersonPanel({
             Age
             <TinyNumber
               id={`${title}-age`}
-              min={18}
-              max={90}
+              min={5}
+              max={80}
               step={1}
               value={age}
               onChange={(ageYears) => patch({ ageYears: Math.round(ageYears) })}

@@ -144,31 +144,55 @@ export function matchDonorRecipient(
   }
 }
 
-/** Common clinical threshold: donor/recipient PHM ratio &lt; 0.86 = undersize. */
+/** Donor/recipient PHM ratio &lt; 0.86 = undersized caution. */
 export const PHM_UNDERSIZE_RATIO = 0.86
 
-/** Deeper caution band: donor/recipient PHM ratio &lt; 0.75. */
+/** Donor/recipient PHM ratio &gt; 1.2 = oversized caution. */
+export const PHM_OVERSIZE_RATIO = 1.2
+
+/** Deeper undersize band: donor/recipient PHM ratio &lt; 0.75. */
 export const PHM_SEVERE_UNDERSIZE_RATIO = 0.75
 
-export type PhmRatioBand = "ok" | "caution" | "severe"
+export const MIN_AGE_YEARS = 5
+export const MAX_AGE_YEARS = 80
 
-/** ≥0.86 ok (green), 0.75–&lt;0.86 caution (yellow), &lt;0.75 severe (red). */
+export type PhmRatioBand = "ok" | "caution" | "severe"
+export type PhmSizeCaution = "undersized" | "oversized" | null
+
+/**
+ * Color bands for the PHM number:
+ * green when 0.86–1.2, yellow caution outside that (or mild undersize),
+ * red when &lt; 0.75.
+ */
 export function phmRatioBand(ratio: number): PhmRatioBand {
   if (!Number.isFinite(ratio)) return "severe"
-  if (ratio >= PHM_UNDERSIZE_RATIO) return "ok"
-  if (ratio >= PHM_SEVERE_UNDERSIZE_RATIO) return "caution"
-  return "severe"
+  if (ratio < PHM_SEVERE_UNDERSIZE_RATIO) return "severe"
+  if (ratio < PHM_UNDERSIZE_RATIO) return "caution"
+  if (ratio > PHM_OVERSIZE_RATIO) return "caution"
+  return "ok"
+}
+
+/** Caution label: undersized below 0.86, oversized above 1.2. */
+export function phmSizeCaution(ratio: number): PhmSizeCaution {
+  if (!Number.isFinite(ratio)) return "undersized"
+  if (ratio < PHM_UNDERSIZE_RATIO) return "undersized"
+  if (ratio > PHM_OVERSIZE_RATIO) return "oversized"
+  return null
 }
 
 export function isValidAdultMetrics(person: PersonMetrics) {
   if (person.sex !== "female" && person.sex !== "male") return false
-  if (!Number.isFinite(person.ageYears) || person.ageYears < 18 || person.ageYears > 100) {
+  if (
+    !Number.isFinite(person.ageYears) ||
+    person.ageYears < MIN_AGE_YEARS ||
+    person.ageYears > MAX_AGE_YEARS
+  ) {
     return false
   }
-  if (!Number.isFinite(person.heightM) || person.heightM < 1.2 || person.heightM > 2.3) {
+  if (!Number.isFinite(person.heightM) || person.heightM < 0.9 || person.heightM > 2.3) {
     return false
   }
-  if (!Number.isFinite(person.weightKg) || person.weightKg < 30 || person.weightKg > 250) {
+  if (!Number.isFinite(person.weightKg) || person.weightKg < 15 || person.weightKg > 250) {
     return false
   }
   return true

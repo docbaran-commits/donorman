@@ -4,6 +4,7 @@ import { useState } from "react"
 
 import { PersonPanel, type PersonDraft } from "@/components/person-panel"
 import {
+  PHM_OVERSIZE_RATIO,
   PHM_UNDERSIZE_RATIO,
   formatBmi,
   formatGrams,
@@ -12,6 +13,7 @@ import {
   isValidAdultMetrics,
   matchDonorRecipient,
   phmRatioBand,
+  phmSizeCaution,
 } from "@/lib/phm"
 import { cn } from "@/lib/cn"
 
@@ -40,31 +42,43 @@ export function MatchBoard() {
   const ready = isValidAdultMetrics(recipient) && isValidAdultMetrics(donor)
   const match = ready ? matchDonorRecipient(recipient, donor) : null
   const band = match ? phmRatioBand(match.phmRatio) : null
-  const undersized = band === "caution" || band === "severe"
+  const sizeCaution = match ? phmSizeCaution(match.phmRatio) : null
   const ratioPct = match ? Math.min(140, Math.max(0, match.phmRatio * 100)) : 0
 
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-lg flex-col">
       <header className="sticky top-0 z-20 border-b border-stone-200/80 bg-[#efe8dc]/95 pt-[env(safe-area-inset-top)] backdrop-blur-md">
-        <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 px-3 pt-2.5 pb-1.5">
+        <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 px-3 pt-2.5 pb-1">
           <h1 className="font-heading justify-self-start text-[1.35rem] leading-none tracking-tight text-stone-900">
             DonorMan
           </h1>
           {match ? (
-            <div className="flex items-baseline justify-center gap-1.5" aria-live="polite">
-              <p
-                className={cn(
-                  "text-[1.55rem] font-bold leading-none tabular-nums",
-                  band === "ok" && "text-emerald-700",
-                  band === "caution" && "text-amber-500",
-                  band === "severe" && "text-red-600"
-                )}
-              >
-                {formatRatio(match.phmRatio)}
-              </p>
-              <p className="text-[0.7rem] font-semibold tracking-wide text-stone-500 uppercase">
-                PHM ratio
-              </p>
+            <div className="flex flex-col items-center gap-0.5" aria-live="polite">
+              <div className="flex items-baseline justify-center gap-1.5">
+                <p
+                  className={cn(
+                    "text-[1.55rem] font-bold leading-none tabular-nums",
+                    band === "ok" && "text-emerald-700",
+                    band === "caution" && "text-amber-500",
+                    band === "severe" && "text-red-600"
+                  )}
+                >
+                  {formatRatio(match.phmRatio)}
+                </p>
+                <p className="text-[0.7rem] font-semibold tracking-wide text-stone-500 uppercase">
+                  PHM ratio
+                </p>
+              </div>
+              {sizeCaution && (
+                <p
+                  className={cn(
+                    "text-[0.7rem] font-bold tracking-wide uppercase",
+                    band === "severe" ? "text-red-600" : "text-amber-600"
+                  )}
+                >
+                  Caution · {sizeCaution}
+                </p>
+              )}
             </div>
           ) : (
             <div />
@@ -84,6 +98,11 @@ export function MatchBoard() {
                 style={{ left: `${PHM_UNDERSIZE_RATIO * 100}%` }}
                 aria-hidden="true"
               />
+              <div
+                className="absolute inset-y-0 w-0.5 bg-stone-900/70"
+                style={{ left: `${Math.min(100, PHM_OVERSIZE_RATIO * 100)}%` }}
+                aria-hidden="true"
+              />
             </div>
             <div className="flex items-center justify-between text-[0.75rem] font-medium text-stone-600">
               <span>{formatPercent(match.phmPercentDifference)}</span>
@@ -95,7 +114,11 @@ export function MatchBoard() {
                   band === "severe" && "text-red-600"
                 )}
               >
-                {undersized ? `< ${PHM_UNDERSIZE_RATIO}` : `mark ${PHM_UNDERSIZE_RATIO}`}
+                {sizeCaution === "undersized"
+                  ? `< ${PHM_UNDERSIZE_RATIO}`
+                  : sizeCaution === "oversized"
+                    ? `> ${PHM_OVERSIZE_RATIO}`
+                    : `${PHM_UNDERSIZE_RATIO}–${PHM_OVERSIZE_RATIO}`}
               </span>
             </div>
           </div>
