@@ -29,12 +29,6 @@ try {
   var baselineH = 0;
   var baselineT = 0;
   var baselineO = window.innerWidth > window.innerHeight ? "l" : "p";
-  var focused = function () {
-    var el = document.activeElement;
-    if (!el) return false;
-    var tag = el.tagName;
-    return tag === "INPUT" || tag === "TEXTAREA" || el.isContentEditable;
-  };
   var sync = function () {
     var vv = window.visualViewport;
     var h = Math.round((vv && vv.height) || window.innerHeight || 0);
@@ -45,15 +39,15 @@ try {
       baselineO = o;
       baselineH = h;
       baselineT = t;
-    } else if (focused() && baselineH > 0 && h < baselineH * 0.85) {
-      // Virtual keyboard — keep the full-screen shell height (no squash).
-      return;
-    } else {
+    } else if (!document.querySelector(".phone-shell[data-editing]")) {
+      // Full layout baseline; focus-mode sizing is handled by ViewportHeight.
       baselineH = h;
       baselineT = t;
     }
-    document.documentElement.style.setProperty("--app-height", baselineH + "px");
-    document.documentElement.style.setProperty("--app-top", baselineT + "px");
+    if (!document.querySelector(".phone-shell[data-editing]")) {
+      document.documentElement.style.setProperty("--app-height", baselineH + "px");
+      document.documentElement.style.setProperty("--app-top", baselineT + "px");
+    }
   };
   sync();
   window.addEventListener("resize", sync);

@@ -83,6 +83,7 @@ export function PersonPanel({
 
   return (
     <section
+      data-panel={accent}
       className={cn(
         // h-full fills the equal 1fr grid cell from .panels (globals.css).
         "flex h-full min-h-0 flex-col overflow-hidden rounded-2xl border border-stone-200/90 shadow-sm",
