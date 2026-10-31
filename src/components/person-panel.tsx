@@ -84,17 +84,19 @@ export function PersonPanel({
   return (
     <section
       className={cn(
-        "flex flex-col overflow-hidden rounded-2xl border border-stone-200/90 shadow-sm",
+        // No h-full here — cn() does not dedupe, and h-full would override the
+        // parent's h-0/flex-1 equal-height sizing in the stylesheet cascade.
+        "flex min-h-0 flex-col overflow-hidden rounded-2xl border border-stone-200/90 shadow-sm",
         soft,
         className
       )}
     >
       <div className={cn("h-1 w-full shrink-0", bar)} aria-hidden="true" />
       {/*
-        Extra panel height becomes even spacing around the same-sized controls —
-        nothing inside scales up.
+        Header fixed; Ht and Wt each take half of the remaining height so both
+        panels share the same outer size and the same internal block layout.
       */}
-      <div className="flex min-h-0 flex-1 flex-col justify-evenly gap-2 px-2.5 py-3">
+      <div className="flex min-h-0 flex-1 flex-col gap-2 px-2.5 py-2.5">
         <div className="flex shrink-0 items-center gap-2">
           <h2 className={cn("min-w-0 flex-1 truncate text-[1.05rem] font-bold tracking-tight", ink)}>
             {title}
@@ -136,7 +138,8 @@ export function PersonPanel({
           </div>
         </div>
 
-        <div className="shrink-0 space-y-1 rounded-xl bg-white/80 p-2 ring-1 ring-stone-200/90">
+        <div className="flex min-h-0 flex-1 flex-col justify-center gap-2">
+        <div className="space-y-1 rounded-xl bg-white/80 p-2 ring-1 ring-stone-200/90">
           <div className="flex flex-nowrap items-center gap-1 overflow-x-auto">
             <p className="shrink-0 text-[0.95rem] font-bold text-stone-800">Ht</p>
             <UnitTabs
@@ -250,7 +253,7 @@ export function PersonPanel({
           )}
         </div>
 
-        <div className="shrink-0 space-y-1 rounded-xl bg-white/80 p-2 ring-1 ring-stone-200/90">
+        <div className="space-y-1 rounded-xl bg-white/80 p-2 ring-1 ring-stone-200/90">
           <div className="flex flex-nowrap items-center gap-1 overflow-x-auto">
             <p className="shrink-0 text-[0.95rem] font-bold text-stone-800">Wt</p>
             <UnitTabs
@@ -309,6 +312,7 @@ export function PersonPanel({
               className="block h-6 w-full cursor-pointer accent-stone-900"
             />
           )}
+        </div>
         </div>
       </div>
     </section>
