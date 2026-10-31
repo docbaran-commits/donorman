@@ -2,12 +2,17 @@
 
 import { useEffect } from "react"
 
+type EditingPanel = "recipient" | "donor" | null
+
 /**
- * Drive --app-height from visualViewport so the first portrait paint matches
- * the post-rotate layout — BUT freeze that height while the virtual keyboard
- * is open. Updating --app-height to the shrunken visualViewport compresses
- * the equal panels and is what felt like the screen "distorting" on weight
- * entry.
+ * Drive --app-height from visualViewport for a correct first portrait paint.
+ *
+ * While typing in a number field, enter "focus mode":
+ * - size the shell to the visible area above the keyboard
+ * - show only the active panel (Recipient or Donor) so the field stays on screen
+ * - hide the other panel + footer so digits are visible as they’re typed
+ *
+ * On blur, restore the equal dual-panel layout and the full-screen baseline.
  */
 export function ViewportHeight() {
   useEffect(() => {
@@ -16,6 +21,8 @@ export function ViewportHeight() {
     let baselineTop = 0
     let baselineOrientation =
       window.innerWidth > window.innerHeight ? "landscape" : "portrait"
+    let editing: EditingPanel = null
+    let blurTimer = 0
 
     const orientation = () =>
       window.innerWidth > window.innerHeight ? "landscape" : "portrait"
@@ -28,37 +35,35 @@ export function ViewportHeight() {
       return null
     }
 
-    const keyboardOpen = (visualHeight: number) => {
-      if (!focusedEditable()) return false
-      // Keyboard typically eats >20% of the screen; ignore tiny chrome jitter.
-      if (baselineHeight > 0 && visualHeight < baselineHeight * 0.85) return true
-      if (window.innerHeight - visualHeight > 120) return true
-      return false
+    const panelFor = (el: HTMLElement | null): EditingPanel => {
+      if (!el) return null
+      const section = el.closest<HTMLElement>("main.panels > section[data-panel]")
+      const id = section?.dataset.panel
+      return id === "recipient" || id === "donor" ? id : null
     }
 
-    const clearShellLift = () => {
-      const shell = document.querySelector<HTMLElement>(".phone-shell")
-      if (shell) shell.style.transform = ""
+    const shell = () => document.querySelector<HTMLElement>(".phone-shell")
+
+    const setEditing = (next: EditingPanel) => {
+      editing = next
+      const node = shell()
+      if (!node) return
+      if (next) node.setAttribute("data-editing", next)
+      else node.removeAttribute("data-editing")
     }
 
-    /** Lift the fixed shell just enough so the focused field sits above the keyboard. */
-    const liftFocusedField = () => {
-      const shell = document.querySelector<HTMLElement>(".phone-shell")
+    const applyShellFrame = (height: number, top: number) => {
+      if (height > 0) root.style.setProperty("--app-height", `${height}px`)
+      root.style.setProperty("--app-top", `${top}px`)
+    }
+
+    const ensureFieldVisible = () => {
       const el = focusedEditable()
-      const vv = window.visualViewport
-      if (!shell || !el || !vv || !keyboardOpen(Math.round(vv.height))) {
-        clearShellLift()
-        return
-      }
-      const visibleBottom = vv.offsetTop + vv.height
-      const rect = el.getBoundingClientRect()
-      const pad = 16
-      const covered = rect.bottom - (visibleBottom - pad)
-      if (covered > 0) {
-        shell.style.transform = `translateY(-${Math.round(covered)}px)`
-      } else {
-        clearShellLift()
-      }
+      if (!el) return
+      // After focus-mode layout settles, scroll the field into the visible panel.
+      window.requestAnimationFrame(() => {
+        el.scrollIntoView({ block: "center", inline: "nearest", behavior: "auto" })
+      })
     }
 
     const sync = () => {
@@ -68,29 +73,37 @@ export function ViewportHeight() {
       if (height <= 0) return
 
       const orient = orientation()
-      const orientChanged = orient !== baselineOrientation
-
-      if (orientChanged) {
+      if (orient !== baselineOrientation) {
         baselineOrientation = orient
         baselineHeight = height
         baselineTop = top
-        clearShellLift()
-      } else if (keyboardOpen(height)) {
-        // Keep the last full-screen baseline — do not shrink the shell.
-        liftFocusedField()
+        setEditing(null)
+        applyShellFrame(baselineHeight, baselineTop)
         return
-      } else {
-        // Chrome show/hide: allow height to grow; also accept modest shrinks
-        // when nothing is focused (URL bar).
-        if (height >= baselineHeight || baselineHeight === 0 || !focusedEditable()) {
-          baselineHeight = height
-          baselineTop = top
-        }
-        clearShellLift()
       }
 
-      root.style.setProperty("--app-height", `${baselineHeight}px`)
-      root.style.setProperty("--app-top", `${baselineTop}px`)
+      const el = focusedEditable()
+      const panel = panelFor(el)
+      const keyboardLikely =
+        !!panel &&
+        ((baselineHeight > 0 && height < baselineHeight * 0.9) ||
+          window.innerHeight - height > 80)
+
+      if (panel && (keyboardLikely || editing === panel)) {
+        // Focus mode: shell = area above keyboard; only the active panel shows.
+        setEditing(panel)
+        applyShellFrame(height, top)
+        ensureFieldVisible()
+        return
+      }
+
+      // Full dual-panel layout.
+      if (editing) setEditing(null)
+      if (height >= baselineHeight || baselineHeight === 0 || !el) {
+        baselineHeight = height
+        baselineTop = top
+      }
+      applyShellFrame(baselineHeight, baselineTop)
     }
 
     sync()
@@ -103,17 +116,26 @@ export function ViewportHeight() {
     const t3 = window.setTimeout(sync, 1000)
 
     const onFocusIn = () => {
+      window.clearTimeout(blurTimer)
+      const panel = panelFor(focusedEditable())
+      if (panel) setEditing(panel)
+      // iOS keyboard animates in; sync a few times so the field tracks it.
+      window.setTimeout(sync, 16)
+      window.setTimeout(sync, 100)
       window.setTimeout(() => {
         sync()
-        liftFocusedField()
-      }, 50)
-      window.setTimeout(liftFocusedField, 300)
+        ensureFieldVisible()
+      }, 320)
     }
+
     const onFocusOut = () => {
-      window.setTimeout(() => {
-        clearShellLift()
-        sync()
-      }, 50)
+      // Wait a tick so focus moving between fields doesn't flicker.
+      blurTimer = window.setTimeout(() => {
+        if (!focusedEditable()) {
+          setEditing(null)
+          sync()
+        }
+      }, 80)
     }
 
     window.addEventListener("resize", sync)
@@ -128,13 +150,14 @@ export function ViewportHeight() {
       window.clearTimeout(t1)
       window.clearTimeout(t2)
       window.clearTimeout(t3)
+      window.clearTimeout(blurTimer)
       window.removeEventListener("resize", sync)
       window.removeEventListener("orientationchange", sync)
       window.visualViewport?.removeEventListener("resize", sync)
       window.visualViewport?.removeEventListener("scroll", sync)
       document.removeEventListener("focusin", onFocusIn)
       document.removeEventListener("focusout", onFocusOut)
-      clearShellLift()
+      setEditing(null)
     }
   }, [])
 

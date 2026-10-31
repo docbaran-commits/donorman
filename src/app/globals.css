@@ -141,9 +141,9 @@ input[type="number"] {
   Pin the shell to the visual viewport height. Use --app-height (from
   visualViewport) so the first portrait paint matches the layout you get after
   rotating to landscape and back — 100dvh alone is wrong on the first iOS frame.
-  --app-height is frozen while the virtual keyboard is open so panels don't
-  squash; a temporary translateY may lift the shell to keep the focused field
-  visible above the keyboard.
+
+  While a number field is focused (data-editing), --app-height tracks the area
+  above the keyboard and only the active panel is shown so digits stay visible.
 */
 .phone-shell {
   position: fixed;
@@ -155,8 +155,6 @@ input[type="number"] {
   height: var(--app-height, 100dvh);
   max-height: var(--app-height, 100dvh);
   margin-inline: auto;
-  /* Smooth the keyboard lift without animating layout height */
-  transition: transform 160ms ease-out;
 }
 
 /*
@@ -178,6 +176,21 @@ input[type="number"] {
   align-self: stretch;
 }
 
+/* Typing focus mode: one panel fills the space above the keyboard */
+.phone-shell[data-editing] > main.panels {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+}
+
+.phone-shell[data-editing="recipient"] > main.panels > section[data-panel="donor"],
+.phone-shell[data-editing="donor"] > main.panels > section[data-panel="recipient"] {
+  display: none;
+}
+
+.phone-shell[data-editing] > footer {
+  display: none;
+}
+
 @media (min-width: 500px) {
   .phone-shell {
     margin-inline: 0;
@@ -195,6 +208,11 @@ input[type="number"] {
 
   .phone-shell > main.panels {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+  }
+
+  .phone-shell[data-editing] > main.panels {
+    grid-template-columns: minmax(0, 1fr);
     grid-template-rows: minmax(0, 1fr);
   }
 }
