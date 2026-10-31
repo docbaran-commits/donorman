@@ -84,14 +84,18 @@ export function PersonPanel({
   return (
     <section
       className={cn(
-        "overflow-hidden rounded-2xl border border-stone-200/90 shadow-sm",
+        "flex flex-col overflow-hidden rounded-2xl border border-stone-200/90 shadow-sm",
         soft,
         className
       )}
     >
-      <div className={cn("h-1 w-full", bar)} aria-hidden="true" />
-      <div className="space-y-2 px-2.5 py-2.5">
-        <div className="flex items-center gap-2">
+      <div className={cn("h-1 w-full shrink-0", bar)} aria-hidden="true" />
+      {/*
+        Extra panel height becomes even spacing around the same-sized controls —
+        nothing inside scales up.
+      */}
+      <div className="flex min-h-0 flex-1 flex-col justify-evenly gap-2 px-2.5 py-3">
+        <div className="flex shrink-0 items-center gap-2">
           <h2 className={cn("min-w-0 flex-1 truncate text-[1.05rem] font-bold tracking-tight", ink)}>
             {title}
           </h2>
@@ -132,7 +136,7 @@ export function PersonPanel({
           </div>
         </div>
 
-        <div className="space-y-1 rounded-xl bg-white/80 p-2 ring-1 ring-stone-200/90">
+        <div className="shrink-0 space-y-1 rounded-xl bg-white/80 p-2 ring-1 ring-stone-200/90">
           <div className="flex flex-nowrap items-center gap-1 overflow-x-auto">
             <p className="shrink-0 text-[0.95rem] font-bold text-stone-800">Ht</p>
             <UnitTabs
@@ -246,7 +250,7 @@ export function PersonPanel({
           )}
         </div>
 
-        <div className="space-y-1 rounded-xl bg-white/80 p-2 ring-1 ring-stone-200/90">
+        <div className="shrink-0 space-y-1 rounded-xl bg-white/80 p-2 ring-1 ring-stone-200/90">
           <div className="flex flex-nowrap items-center gap-1 overflow-x-auto">
             <p className="shrink-0 text-[0.95rem] font-bold text-stone-800">Wt</p>
             <UnitTabs

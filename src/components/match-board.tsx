@@ -146,20 +146,20 @@ export function MatchBoard() {
         )}
       </header>
 
-      <main className="grid min-h-0 flex-1 grid-cols-1 content-start gap-2 overflow-y-auto overscroll-y-contain px-3 pt-2 pb-2 pl-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))] landscape:grid-cols-2 landscape:content-stretch landscape:gap-3 landscape:overflow-hidden landscape:px-4 landscape:pt-2 landscape:pb-1">
+      <main className="flex min-h-0 flex-1 flex-col gap-2.5 overflow-y-auto overscroll-y-contain px-3 pt-2 pb-2 pl-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))] landscape:grid landscape:grid-cols-2 landscape:gap-3 landscape:overflow-hidden landscape:px-4 landscape:pt-2 landscape:pb-1">
         <PersonPanel
           title="Recipient"
           accent="recipient"
           value={recipient}
           onChange={setRecipient}
-          className="landscape:min-h-0 landscape:h-full landscape:overflow-y-auto"
+          className="min-h-min grow shrink-0 landscape:h-full landscape:min-h-0 landscape:shrink landscape:overflow-y-auto"
         />
         <PersonPanel
           title="Donor"
           accent="donor"
           value={donor}
           onChange={setDonor}
-          className="landscape:min-h-0 landscape:h-full landscape:overflow-y-auto"
+          className="min-h-min grow shrink-0 landscape:h-full landscape:min-h-0 landscape:shrink landscape:overflow-y-auto"
         />
       </main>
 
