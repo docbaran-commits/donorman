@@ -8,6 +8,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "docs/**",
+    "ios/**",
+    "android/**",
     "next-env.d.ts",
   ]),
   ...nextVitals,

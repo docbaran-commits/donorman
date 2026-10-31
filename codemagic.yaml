@@ -1,0 +1,78 @@
+# Codemagic CI — build DonorMan (Capacitor / iOS) and upload to TestFlight.
+#
+# Before the first successful run, complete the checklist in README.md
+# under "App Store / TestFlight (Codemagic)".
+
+workflows:
+  ios-testflight:
+    name: DonorMan → TestFlight
+    max_build_duration: 120
+    instance_type: mac_mini_m2
+
+    # Exact reference name from Codemagic → Team settings →
+    # Integrations → Developer Portal → Manage keys (use the copy button).
+    # Change this string if your key is saved under a different name.
+    integrations:
+      app_store_connect: Codemagic
+
+    environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.docbaran.donorman
+      vars:
+        XCODE_PROJECT: ios/App/App.xcodeproj
+        XCODE_SCHEME: App
+        # Numeric Apple ID of the app in App Store Connect (App Information).
+        # Replace after you create the app record.
+        APP_STORE_APPLE_ID: "0000000000"
+      node: 22
+      xcode: latest
+
+    scripts:
+      - name: Install npm dependencies
+        script: |
+          npm ci
+
+      - name: Build web assets for Capacitor (no GitHub Pages basePath)
+        script: |
+          unset NEXT_PUBLIC_BASE_PATH
+          npm run build
+          npx cap sync ios
+
+      - name: Set up code signing profiles
+        script: |
+          xcode-project use-profiles
+
+      - name: Increment iOS build number from latest TestFlight build
+        script: |
+          cd ios/App
+          LATEST_BUILD=$(app-store-connect get-latest-testflight-build-number "$APP_STORE_APPLE_ID" || echo 0)
+          NEW_BUILD=$((LATEST_BUILD + 1))
+          echo "Using CFBundleVersion $NEW_BUILD (previous TestFlight was $LATEST_BUILD)"
+          agvtool new-version -all "$NEW_BUILD"
+
+      - name: Build signed IPA
+        script: |
+          xcode-project build-ipa \
+            --project "$XCODE_PROJECT" \
+            --scheme "$XCODE_SCHEME"
+
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+      - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.dSYM
+
+    publishing:
+      email:
+        recipients:
+          - docbaran@gmail.com
+        notify:
+          success: true
+          failure: true
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+        submit_to_app_store: false
+        # Optional: names of TestFlight groups in App Store Connect
+        # beta_groups:
+        #   - Internal Testers
