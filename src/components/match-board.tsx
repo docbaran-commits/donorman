@@ -48,8 +48,13 @@ export function MatchBoard() {
   const pediatricRecipient = recipient.ageYears < 18
 
   return (
-    <div className="mx-auto flex h-dvh max-h-dvh w-full max-w-lg flex-col overflow-hidden">
-      <header className="sticky top-0 z-20 border-b border-stone-200 bg-[#efe8dc] pt-[env(safe-area-inset-top)]">
+    <div className="flex h-dvh max-h-dvh w-full justify-center min-[500px]:justify-start">
+      {/*
+        Phone-first shell (~430px): full width on phones; on tablet / foldable-open /
+        Split View (≥500px) pins to the leading half so density stays phone-like.
+      */}
+      <div className="phone-shell flex h-full w-full max-w-[26.875rem] flex-col overflow-hidden bg-transparent min-[500px]:border-r min-[500px]:border-stone-300/70 min-[500px]:bg-[#f3efe6]/80 min-[500px]:shadow-[8px_0_28px_rgba(28,25,23,0.06)]">
+      <header className="sticky top-0 z-20 shrink-0 border-b border-stone-200 bg-[#efe8dc] pt-[max(0.25rem,env(safe-area-inset-top))] pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]">
         <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 px-3 pt-2.5 pb-1">
           <h1 className="font-heading justify-self-start text-[1.35rem] leading-none tracking-tight text-stone-900 [transform:translateZ(0)]">
             DonorMan
@@ -141,7 +146,7 @@ export function MatchBoard() {
         )}
       </header>
 
-      <main className="grid min-h-0 flex-1 grid-cols-1 content-start gap-2 overflow-y-auto px-3 pt-2 pb-2 sm:grid-cols-2">
+      <main className="grid min-h-0 flex-1 grid-cols-1 content-start gap-2 overflow-y-auto overscroll-y-contain px-3 pt-2 pb-2 pl-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))]">
         <PersonPanel
           title="Recipient"
           accent="recipient"
@@ -152,7 +157,7 @@ export function MatchBoard() {
       </main>
 
       {match && (
-        <footer className="shrink-0 border-t border-stone-200 bg-[#efe8dc] px-2.5 pt-1.5 pb-[max(0.4rem,env(safe-area-inset-bottom))]">
+        <footer className="shrink-0 border-t border-stone-200 bg-[#efe8dc] px-2.5 pt-1.5 pb-[max(0.4rem,env(safe-area-inset-bottom))] pl-[max(0.625rem,env(safe-area-inset-left))] pr-[max(0.625rem,env(safe-area-inset-right))]">
           <div className="rounded-lg bg-white px-2 py-1.5 ring-1 ring-stone-200">
             <div className="grid grid-cols-2 gap-x-2 gap-y-0.5">
               <BmiBlock
@@ -222,6 +227,7 @@ export function MatchBoard() {
           </div>
         </footer>
       )}
+      </div>
     </div>
   )
 }
