@@ -48,13 +48,14 @@ export function MatchBoard() {
   const pediatricRecipient = recipient.ageYears < 18
 
   return (
-    <div className="flex h-dvh max-h-dvh w-full justify-center min-[500px]:justify-start landscape:justify-stretch">
+    <div className="min-h-dvh w-full">
       {/*
-        Portrait: phone-width shell (~430px), pinned left on wide tablets.
-        Landscape: full width — Recipient | Donor side by side to use the space.
+        .phone-shell is position:fixed to the visual viewport (see globals.css)
+        so the results strip can sit on the real iPhone bottom edge. Portrait
+        stays phone-width; landscape goes full width with side-by-side panels.
       */}
-      <div className="phone-shell flex h-dvh min-h-dvh max-h-dvh w-full max-w-[26.875rem] flex-col overflow-hidden bg-transparent min-[500px]:border-r min-[500px]:border-stone-300/70 min-[500px]:bg-[#f3efe6]/80 min-[500px]:shadow-[8px_0_28px_rgba(28,25,23,0.06)] landscape:max-w-none landscape:border-0 landscape:bg-transparent landscape:shadow-none">
-      <header className="sticky top-0 z-20 shrink-0 border-b border-stone-200 bg-[#efe8dc] pt-[max(0.25rem,env(safe-area-inset-top))] pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]">
+      <div className="phone-shell flex flex-col overflow-hidden bg-[#f3efe6] min-[500px]:border-r min-[500px]:border-stone-300/70 min-[500px]:bg-[#f3efe6]/80 min-[500px]:shadow-[8px_0_28px_rgba(28,25,23,0.06)] landscape:border-0 landscape:bg-[#f3efe6] landscape:shadow-none">
+      <header className="shrink-0 border-b border-stone-200 bg-[#efe8dc] pt-[max(0.25rem,env(safe-area-inset-top))] pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]">
         <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 px-3 pt-2.5 pb-1 landscape:px-4 landscape:pt-1.5 landscape:pb-0.5">
           <h1 className="font-heading justify-self-start text-[1.35rem] leading-none tracking-tight text-stone-900 landscape:text-[1.2rem] [transform:translateZ(0)]">
             DonorMan
@@ -147,11 +148,10 @@ export function MatchBoard() {
       </header>
 
       {/*
-        Equal grid rows + overflow-hidden: free height goes into Recipient/Donor
-        (not empty beige under Donor). Compact footer stays mt-auto at the bottom
-        and keeps its own size so it cannot shove the middle panel.
+        Donor (middle) gets a larger row share. Free height stays in the panels;
+        the footer below is content-sized only so it cannot climb into Donor.
       */}
-      <main className="grid min-h-0 flex-1 grid-rows-2 gap-2.5 overflow-hidden px-3 pt-2 pb-1.5 pl-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))] landscape:grid-cols-2 landscape:grid-rows-1 landscape:gap-3 landscape:px-4 landscape:pt-2 landscape:pb-1">
+      <main className="grid min-h-0 flex-1 grid-rows-[minmax(0,1fr)_minmax(0,1.2fr)] gap-2 overflow-hidden px-3 pt-2 pb-1 pl-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))] landscape:grid-cols-2 landscape:grid-rows-1 landscape:gap-3 landscape:px-4 landscape:pt-2 landscape:pb-1">
         <PersonPanel
           title="Recipient"
           accent="recipient"
@@ -169,8 +169,13 @@ export function MatchBoard() {
       </main>
 
       {match && (
-        <footer className="mt-auto shrink-0 border-t border-stone-200 bg-[#efe8dc] px-2.5 pt-1 pb-[max(0.25rem,env(safe-area-inset-bottom,0px))] pl-[max(0.625rem,env(safe-area-inset-left))] pr-[max(0.625rem,env(safe-area-inset-right))] landscape:px-4 landscape:pt-1">
-          <div className="rounded-lg bg-white px-2 py-1.5 ring-1 ring-stone-200 landscape:flex landscape:flex-wrap landscape:items-center landscape:justify-between landscape:gap-x-4 landscape:gap-y-1 landscape:py-1">
+        <footer className="shrink-0 border-t border-stone-200 bg-white px-2.5 pt-1.5 pb-2 pl-[max(0.625rem,env(safe-area-inset-left))] pr-[max(0.625rem,env(safe-area-inset-right))] landscape:px-4 landscape:pt-1 landscape:pb-1.5">
+          {/*
+            Content-sized only — no safe-area padding that inflates empty white and
+            shoves Donor. The fixed .phone-shell pins this strip to the real screen
+            bottom; a short pb-2 clears the home indicator without a tall void.
+          */}
+          <div className="landscape:flex landscape:flex-wrap landscape:items-center landscape:justify-between landscape:gap-x-4 landscape:gap-y-1">
             <div className="grid grid-cols-2 gap-x-2 gap-y-0.5 landscape:flex landscape:flex-1 landscape:gap-x-4">
               <BmiBlock
                 label="Recipient"
