@@ -3,6 +3,7 @@ import { Fraunces, IBM_Plex_Sans } from "next/font/google"
 import Script from "next/script"
 
 import { PwaRegister } from "@/components/pwa-register"
+import { ViewportHeight } from "@/components/viewport-height"
 
 import "./globals.css"
 
@@ -20,6 +21,25 @@ const fraunces = Fraunces({
 const themeBoot = `
 try {
   document.documentElement.classList.remove("dark");
+} catch (e) {}
+`
+
+const viewportBoot = `
+try {
+  var sync = function () {
+    var vv = window.visualViewport;
+    var h = Math.round((vv && vv.height) || window.innerHeight || 0);
+    var t = Math.round((vv && vv.offsetTop) || 0);
+    if (h > 0) document.documentElement.style.setProperty("--app-height", h + "px");
+    document.documentElement.style.setProperty("--app-top", t + "px");
+  };
+  sync();
+  window.addEventListener("resize", sync);
+  window.addEventListener("orientationchange", sync);
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", sync);
+    window.visualViewport.addEventListener("scroll", sync);
+  }
 } catch (e) {}
 `
 
@@ -58,6 +78,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Script id="theme-boot" strategy="beforeInteractive">
           {themeBoot}
         </Script>
+        <Script id="viewport-boot" strategy="beforeInteractive">
+          {viewportBoot}
+        </Script>
+        <ViewportHeight />
         {children}
         <PwaRegister />
       </body>
