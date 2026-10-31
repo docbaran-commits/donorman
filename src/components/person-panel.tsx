@@ -44,13 +44,11 @@ export function PersonPanel({
   accent,
   value,
   onChange,
-  className,
 }: {
   title: string
   accent: "recipient" | "donor"
   value: PersonDraft
   onChange: (next: PersonDraft) => void
-  className?: string
 }) {
   const totalIn = mToTotalInches(value.heightM)
   const split = splitFeetInches(totalIn)
@@ -82,17 +80,11 @@ export function PersonPanel({
   }
 
   return (
-    <section
-      className={cn(
-        "flex flex-col rounded-2xl border border-stone-200/90 shadow-sm",
-        soft,
-        className
-      )}
-    >
-      <div className={cn("h-1.5 w-full shrink-0 rounded-t-[0.9rem]", bar)} aria-hidden="true" />
-      <div className="flex min-h-0 flex-1 flex-col gap-3 px-3 py-3">
-        <div className="flex shrink-0 items-center gap-2">
-          <h2 className={cn("min-w-0 flex-1 truncate text-[1.1rem] font-bold tracking-tight", ink)}>
+    <section className={cn("overflow-hidden rounded-2xl border border-stone-200/90 shadow-sm", soft)}>
+      <div className={cn("h-1 w-full", bar)} aria-hidden="true" />
+      <div className="space-y-2 px-2.5 py-2.5">
+        <div className="flex items-center gap-2">
+          <h2 className={cn("min-w-0 flex-1 truncate text-[1.05rem] font-bold tracking-tight", ink)}>
             {title}
           </h2>
           <label className="flex items-center gap-1 text-[0.85rem] font-semibold text-stone-600">
@@ -132,8 +124,7 @@ export function PersonPanel({
           </div>
         </div>
 
-        {/* Content-sized cards: padding under each slider stays put; no flex crush/overlap */}
-        <div className="shrink-0 space-y-1.5 rounded-xl bg-white/80 px-2.5 pt-2.5 pb-3 ring-1 ring-stone-200/90">
+        <div className="space-y-1 rounded-xl bg-white/80 p-2 ring-1 ring-stone-200/90">
           <div className="flex flex-nowrap items-center gap-1 overflow-x-auto">
             <p className="shrink-0 text-[0.95rem] font-bold text-stone-800">Ht</p>
             <UnitTabs
@@ -212,7 +203,7 @@ export function PersonPanel({
                 setHeightFromFeetInches(feet, Number((event.target as HTMLInputElement).value))
               }
               onChange={(event) => setHeightFromFeetInches(feet, Number(event.target.value))}
-              className="metric-slider block w-full cursor-pointer accent-stone-900"
+              className="block h-6 w-full cursor-pointer accent-stone-900"
             />
           )}
           {value.heightUnit === "cm" && (
@@ -227,7 +218,7 @@ export function PersonPanel({
                 patch({ heightM: cmToM(Number((event.target as HTMLInputElement).value)) })
               }
               onChange={(event) => patch({ heightM: cmToM(Number(event.target.value)) })}
-              className="metric-slider block w-full cursor-pointer accent-stone-900"
+              className="block h-6 w-full cursor-pointer accent-stone-900"
             />
           )}
           {value.heightUnit === "m" && (
@@ -242,12 +233,12 @@ export function PersonPanel({
                 patch({ heightM: Number((event.target as HTMLInputElement).value) })
               }
               onChange={(event) => patch({ heightM: Number(event.target.value) })}
-              className="metric-slider block w-full cursor-pointer accent-stone-900"
+              className="block h-6 w-full cursor-pointer accent-stone-900"
             />
           )}
         </div>
 
-        <div className="shrink-0 space-y-1.5 rounded-xl bg-white/80 px-2.5 pt-2.5 pb-3 ring-1 ring-stone-200/90">
+        <div className="space-y-1 rounded-xl bg-white/80 p-2 ring-1 ring-stone-200/90">
           <div className="flex flex-nowrap items-center gap-1 overflow-x-auto">
             <p className="shrink-0 text-[0.95rem] font-bold text-stone-800">Wt</p>
             <UnitTabs
@@ -289,7 +280,7 @@ export function PersonPanel({
                 patch({ weightKg: lbToKg(Number((event.target as HTMLInputElement).value)) })
               }
               onChange={(event) => patch({ weightKg: lbToKg(Number(event.target.value)) })}
-              className="metric-slider block w-full cursor-pointer accent-stone-900"
+              className="block h-6 w-full cursor-pointer accent-stone-900"
             />
           ) : (
             <input
@@ -303,13 +294,10 @@ export function PersonPanel({
                 patch({ weightKg: Number((event.target as HTMLInputElement).value) })
               }
               onChange={(event) => patch({ weightKg: Number(event.target.value) })}
-              className="metric-slider block w-full cursor-pointer accent-stone-900"
+              className="block h-6 w-full cursor-pointer accent-stone-900"
             />
           )}
         </div>
-
-        {/* Extra panel height lands here — not between Ht and Wt */}
-        <div className="min-h-0 flex-1" aria-hidden="true" />
       </div>
     </section>
   )
