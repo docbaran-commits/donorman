@@ -44,11 +44,13 @@ export function PersonPanel({
   accent,
   value,
   onChange,
+  className,
 }: {
   title: string
   accent: "recipient" | "donor"
   value: PersonDraft
   onChange: (next: PersonDraft) => void
+  className?: string
 }) {
   const totalIn = mToTotalInches(value.heightM)
   const split = splitFeetInches(totalIn)
@@ -80,7 +82,13 @@ export function PersonPanel({
   }
 
   return (
-    <section className={cn("overflow-hidden rounded-2xl border border-stone-200/90 shadow-sm", soft)}>
+    <section
+      className={cn(
+        "overflow-hidden rounded-2xl border border-stone-200/90 shadow-sm",
+        soft,
+        className
+      )}
+    >
       <div className={cn("h-1 w-full", bar)} aria-hidden="true" />
       <div className="space-y-2 px-2.5 py-2.5">
         <div className="flex items-center gap-2">

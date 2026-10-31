@@ -52,6 +52,24 @@ body {
   }
 }
 
+/* iPhone landscape: fill the wide canvas; panels sit side-by-side */
+@media (orientation: landscape) {
+  body {
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
+  .phone-shell {
+    max-width: none;
+    width: 100%;
+    min-height: 100dvh;
+  }
+
+  .phone-shell > main {
+    min-height: 0;
+  }
+}
+
 .font-heading {
   font-family: var(--font-heading), ui-serif, Georgia, serif;
 }

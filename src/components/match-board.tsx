@@ -48,15 +48,15 @@ export function MatchBoard() {
   const pediatricRecipient = recipient.ageYears < 18
 
   return (
-    <div className="flex h-dvh max-h-dvh w-full justify-center min-[500px]:justify-start">
+    <div className="flex h-dvh max-h-dvh w-full justify-center min-[500px]:justify-start landscape:justify-stretch">
       {/*
-        Phone-first shell (~430px): full width on phones; on tablet / foldable-open /
-        Split View (≥500px) pins to the leading half so density stays phone-like.
+        Portrait: phone-width shell (~430px), pinned left on wide tablets.
+        Landscape: full width — Recipient | Donor side by side to use the space.
       */}
-      <div className="phone-shell flex h-dvh max-h-dvh w-full max-w-[26.875rem] flex-col overflow-hidden bg-transparent min-[500px]:border-r min-[500px]:border-stone-300/70 min-[500px]:bg-[#f3efe6]/80 min-[500px]:shadow-[8px_0_28px_rgba(28,25,23,0.06)]">
+      <div className="phone-shell flex h-dvh max-h-dvh w-full max-w-[26.875rem] flex-col overflow-hidden bg-transparent min-[500px]:border-r min-[500px]:border-stone-300/70 min-[500px]:bg-[#f3efe6]/80 min-[500px]:shadow-[8px_0_28px_rgba(28,25,23,0.06)] landscape:max-w-none landscape:border-0 landscape:bg-transparent landscape:shadow-none">
       <header className="sticky top-0 z-20 shrink-0 border-b border-stone-200 bg-[#efe8dc] pt-[max(0.25rem,env(safe-area-inset-top))] pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]">
-        <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 px-3 pt-2.5 pb-1">
-          <h1 className="font-heading justify-self-start text-[1.35rem] leading-none tracking-tight text-stone-900 [transform:translateZ(0)]">
+        <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 px-3 pt-2.5 pb-1 landscape:px-4 landscape:pt-1.5 landscape:pb-0.5">
+          <h1 className="font-heading justify-self-start text-[1.35rem] leading-none tracking-tight text-stone-900 landscape:text-[1.2rem] [transform:translateZ(0)]">
             DonorMan
           </h1>
           {match ? (
@@ -94,8 +94,8 @@ export function MatchBoard() {
         </div>
 
         {match && (
-          <div className="space-y-1 bg-white px-3 py-1.5">
-            <div className="relative h-2 overflow-hidden rounded-full bg-stone-200">
+          <div className="space-y-1 bg-white px-3 py-1.5 landscape:space-y-0.5 landscape:py-1">
+            <div className="relative h-2 overflow-hidden rounded-full bg-stone-200 landscape:h-1.5">
               <div
                 className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-teal-700 to-rose-700 transition-[width] duration-150"
                 style={{ width: `${ratioPct}%` }}
@@ -146,20 +146,27 @@ export function MatchBoard() {
         )}
       </header>
 
-      <main className="grid min-h-0 flex-1 grid-cols-1 content-start gap-2 overflow-y-auto overscroll-y-contain px-3 pt-2 pb-2 pl-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))]">
+      <main className="grid min-h-0 flex-1 grid-cols-1 content-start gap-2 overflow-y-auto overscroll-y-contain px-3 pt-2 pb-2 pl-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))] landscape:grid-cols-2 landscape:content-stretch landscape:gap-3 landscape:overflow-hidden landscape:px-4 landscape:pt-2 landscape:pb-1">
         <PersonPanel
           title="Recipient"
           accent="recipient"
           value={recipient}
           onChange={setRecipient}
+          className="landscape:min-h-0 landscape:h-full landscape:overflow-y-auto"
         />
-        <PersonPanel title="Donor" accent="donor" value={donor} onChange={setDonor} />
+        <PersonPanel
+          title="Donor"
+          accent="donor"
+          value={donor}
+          onChange={setDonor}
+          className="landscape:min-h-0 landscape:h-full landscape:overflow-y-auto"
+        />
       </main>
 
       {match && (
-        <footer className="shrink-0 border-t border-stone-200 bg-[#efe8dc] px-2.5 pt-1.5 pb-[max(0.4rem,env(safe-area-inset-bottom))] pl-[max(0.625rem,env(safe-area-inset-left))] pr-[max(0.625rem,env(safe-area-inset-right))]">
-          <div className="rounded-lg bg-white px-2 py-1.5 ring-1 ring-stone-200">
-            <div className="grid grid-cols-2 gap-x-2 gap-y-0.5">
+        <footer className="shrink-0 border-t border-stone-200 bg-[#efe8dc] px-2.5 pt-1.5 pb-[max(0.4rem,env(safe-area-inset-bottom))] pl-[max(0.625rem,env(safe-area-inset-left))] pr-[max(0.625rem,env(safe-area-inset-right))] landscape:px-4 landscape:pt-1">
+          <div className="rounded-lg bg-white px-2 py-1.5 ring-1 ring-stone-200 landscape:flex landscape:flex-wrap landscape:items-center landscape:justify-between landscape:gap-x-4 landscape:gap-y-1 landscape:py-1">
+            <div className="grid grid-cols-2 gap-x-2 gap-y-0.5 landscape:flex landscape:flex-1 landscape:gap-x-4">
               <BmiBlock
                 label="Recipient"
                 bmi={match.recipient.bmi}
@@ -175,7 +182,7 @@ export function MatchBoard() {
             </div>
 
             <p
-              className="mt-1 text-center text-[0.8rem] font-bold tabular-nums text-stone-800"
+              className="mt-1 text-center text-[0.8rem] font-bold tabular-nums text-stone-800 landscape:mt-0 landscape:shrink-0"
               aria-live="polite"
             >
               Donor wt{" "}
@@ -185,8 +192,8 @@ export function MatchBoard() {
               <span className="font-semibold text-stone-500">of recipient</span>
             </p>
 
-            <div className="mt-1 border-t border-stone-200/90 pt-1">
-              <div className="grid grid-cols-2 gap-x-2">
+            <div className="mt-1 border-t border-stone-200/90 pt-1 landscape:mt-0 landscape:flex landscape:flex-1 landscape:items-center landscape:justify-end landscape:gap-x-4 landscape:border-t-0 landscape:pt-0">
+              <div className="grid grid-cols-2 gap-x-2 landscape:flex landscape:gap-x-4">
                 <HeartGrams
                   mass={match.recipient.predictedHeartMassG}
                   lv={match.recipient.leftVentricularMassG}
@@ -201,7 +208,7 @@ export function MatchBoard() {
                 />
               </div>
               <p
-                className="mt-1 flex flex-wrap items-baseline justify-center gap-x-2 gap-y-0.5 text-center text-[0.8rem] font-bold tabular-nums text-stone-800"
+                className="mt-1 flex flex-wrap items-baseline justify-center gap-x-2 gap-y-0.5 text-center text-[0.8rem] font-bold tabular-nums text-stone-800 landscape:mt-0 landscape:flex-col landscape:items-end landscape:gap-0"
                 aria-live="polite"
               >
                 <span>
@@ -209,17 +216,15 @@ export function MatchBoard() {
                   <span className="text-[0.95rem] text-stone-900">
                     {formatRatio(match.bsaRatio)}
                   </span>
-                </span>
-                <span className="text-stone-300" aria-hidden="true">
-                  ·
-                </span>
-                <span>
+                  <span className="mx-1 text-stone-300" aria-hidden="true">
+                    ·
+                  </span>
                   BMI{" "}
                   <span className="text-[0.95rem] text-stone-900">
                     {formatRatio(match.bmiRatio)}
                   </span>
                 </span>
-                <span className="w-full text-[0.7rem] font-semibold text-stone-500">
+                <span className="w-full text-[0.7rem] font-semibold text-stone-500 landscape:w-auto">
                   donor ÷ recipient
                 </span>
               </p>
