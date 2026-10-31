@@ -57,6 +57,10 @@ body {
     flex: 1 1 auto;
     min-height: 12rem;
   }
+
+  .phone-shell > main.panels {
+    min-height: 12rem;
+  }
 }
 
 /* iPhone landscape: fill the wide canvas; panels sit side-by-side */
@@ -150,6 +154,25 @@ input[type="number"] {
   margin-inline: auto;
 }
 
+/*
+  Portrait: two equal rows — Recipient and Donor MUST share identical outer
+  height regardless of ft/in vs cm content. Prefer grid over flex: iOS Safari
+  still sizes flex items by content min-size in some cases even with min-h-0.
+*/
+.phone-shell > main.panels {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+  align-content: stretch;
+}
+
+.phone-shell > main.panels > section {
+  min-height: 0;
+  max-height: 100%;
+  height: 100%;
+  align-self: stretch;
+}
+
 @media (min-width: 500px) {
   .phone-shell {
     margin-inline: 0;
@@ -163,5 +186,10 @@ input[type="number"] {
     left: 0;
     right: 0;
     margin-inline: 0;
+  }
+
+  .phone-shell > main.panels {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
   }
 }
