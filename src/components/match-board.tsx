@@ -146,7 +146,7 @@ export function MatchBoard() {
         )}
       </header>
 
-      <main className="flex min-h-0 flex-1 flex-col gap-2.5 overflow-y-auto overscroll-y-contain px-3 pt-2 pb-1 pl-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))] landscape:grid landscape:grid-cols-2 landscape:gap-3 landscape:overflow-hidden landscape:px-4 landscape:pt-2 landscape:pb-1">
+      <main className="flex min-h-0 flex-1 flex-col gap-2.5 overflow-y-auto overscroll-y-contain px-3 pt-2 pb-2 pl-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))] landscape:grid landscape:grid-cols-2 landscape:gap-3 landscape:overflow-hidden landscape:px-4 landscape:pt-2 landscape:pb-1">
         <PersonPanel
           title="Recipient"
           accent="recipient"
@@ -164,12 +164,8 @@ export function MatchBoard() {
       </main>
 
       {match && (
-        <footer className="mt-auto shrink-0 border-t border-stone-200 bg-white px-2.5 pt-1.5 pb-[max(0.5rem,env(safe-area-inset-bottom))] pl-[max(0.625rem,env(safe-area-inset-left))] pr-[max(0.625rem,env(safe-area-inset-right))] landscape:px-4 landscape:pt-1 landscape:pb-[max(0.35rem,env(safe-area-inset-bottom))]">
-          {/*
-            White results strip sits flush with the screen bottom; home-indicator
-            inset is padding inside this panel, not empty beige below it.
-          */}
-          <div className="landscape:flex landscape:flex-wrap landscape:items-center landscape:justify-between landscape:gap-x-4 landscape:gap-y-1">
+        <footer className="shrink-0 border-t border-stone-200 bg-[#efe8dc] px-2.5 pt-1.5 pb-[max(0.4rem,env(safe-area-inset-bottom))] pl-[max(0.625rem,env(safe-area-inset-left))] pr-[max(0.625rem,env(safe-area-inset-right))] landscape:px-4 landscape:pt-1">
+          <div className="rounded-lg bg-white px-2 py-1.5 ring-1 ring-stone-200 landscape:flex landscape:flex-wrap landscape:items-center landscape:justify-between landscape:gap-x-4 landscape:gap-y-1 landscape:py-1">
             <div className="grid grid-cols-2 gap-x-2 gap-y-0.5 landscape:flex landscape:flex-1 landscape:gap-x-4">
               <BmiBlock
                 label="Recipient"
