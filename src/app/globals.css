@@ -69,10 +69,21 @@ input[type="range"] {
   background: transparent;
 }
 
-/* Hit area for the thumb; bottom clearance comes from a spacer under the input */
-input[type="range"].metric-slider {
-  height: 1.75rem;
+/*
+  Slider sits in a fixed-height row; the white metric card keeps pb-5 under it
+  so panel space below the track is always visible (not only while dragging).
+*/
+.metric-slider-row {
+  display: flex;
+  align-items: center;
+  min-height: 2.75rem;
   padding-inline: 0.15rem;
+}
+
+input[type="range"].metric-slider {
+  height: 2.75rem;
+  margin: 0;
+  padding: 0;
 }
 
 input[type="range"]::-webkit-slider-runnable-track {
@@ -84,7 +95,8 @@ input[type="range"]::-webkit-slider-runnable-track {
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  margin-top: -0.55rem;
+  /* Center thumb on the track inside the tall hit area */
+  margin-top: calc((0.55rem - 1.55rem) / 2);
   width: 1.55rem;
   height: 1.55rem;
   border-radius: 999px;
