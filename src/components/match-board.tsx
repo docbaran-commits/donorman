@@ -53,7 +53,7 @@ export function MatchBoard() {
         Portrait: phone-width shell (~430px), pinned left on wide tablets.
         Landscape: full width — Recipient | Donor side by side to use the space.
       */}
-      <div className="phone-shell flex h-dvh max-h-dvh w-full max-w-[26.875rem] flex-col overflow-hidden bg-transparent min-[500px]:border-r min-[500px]:border-stone-300/70 min-[500px]:bg-[#f3efe6]/80 min-[500px]:shadow-[8px_0_28px_rgba(28,25,23,0.06)] landscape:max-w-none landscape:border-0 landscape:bg-transparent landscape:shadow-none">
+      <div className="phone-shell flex h-dvh min-h-dvh max-h-dvh w-full max-w-[26.875rem] flex-col overflow-hidden bg-transparent min-[500px]:border-r min-[500px]:border-stone-300/70 min-[500px]:bg-[#f3efe6]/80 min-[500px]:shadow-[8px_0_28px_rgba(28,25,23,0.06)] landscape:max-w-none landscape:border-0 landscape:bg-transparent landscape:shadow-none">
       <header className="sticky top-0 z-20 shrink-0 border-b border-stone-200 bg-[#efe8dc] pt-[max(0.25rem,env(safe-area-inset-top))] pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]">
         <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 px-3 pt-2.5 pb-1 landscape:px-4 landscape:pt-1.5 landscape:pb-0.5">
           <h1 className="font-heading justify-self-start text-[1.35rem] leading-none tracking-tight text-stone-900 landscape:text-[1.2rem] [transform:translateZ(0)]">
@@ -146,25 +146,30 @@ export function MatchBoard() {
         )}
       </header>
 
-      <main className="flex min-h-0 flex-1 flex-col gap-2.5 overflow-y-auto overscroll-y-contain px-3 pt-2 pb-2 pl-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))] landscape:grid landscape:grid-cols-2 landscape:gap-3 landscape:overflow-hidden landscape:px-4 landscape:pt-2 landscape:pb-1">
+      {/*
+        Equal grid rows + overflow-hidden: free height goes into Recipient/Donor
+        (not empty beige under Donor). Compact footer stays mt-auto at the bottom
+        and keeps its own size so it cannot shove the middle panel.
+      */}
+      <main className="grid min-h-0 flex-1 grid-rows-2 gap-2.5 overflow-hidden px-3 pt-2 pb-1.5 pl-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))] landscape:grid-cols-2 landscape:grid-rows-1 landscape:gap-3 landscape:px-4 landscape:pt-2 landscape:pb-1">
         <PersonPanel
           title="Recipient"
           accent="recipient"
           value={recipient}
           onChange={setRecipient}
-          className="min-h-min grow shrink-0 landscape:h-full landscape:min-h-0 landscape:shrink landscape:overflow-y-auto"
+          className="min-h-0 overflow-y-auto overscroll-y-contain"
         />
         <PersonPanel
           title="Donor"
           accent="donor"
           value={donor}
           onChange={setDonor}
-          className="min-h-min grow shrink-0 landscape:h-full landscape:min-h-0 landscape:shrink landscape:overflow-y-auto"
+          className="min-h-0 overflow-y-auto overscroll-y-contain"
         />
       </main>
 
       {match && (
-        <footer className="shrink-0 border-t border-stone-200 bg-[#efe8dc] px-2.5 pt-1.5 pb-[max(0.4rem,env(safe-area-inset-bottom))] pl-[max(0.625rem,env(safe-area-inset-left))] pr-[max(0.625rem,env(safe-area-inset-right))] landscape:px-4 landscape:pt-1">
+        <footer className="mt-auto shrink-0 border-t border-stone-200 bg-[#efe8dc] px-2.5 pt-1 pb-[max(0.25rem,env(safe-area-inset-bottom,0px))] pl-[max(0.625rem,env(safe-area-inset-left))] pr-[max(0.625rem,env(safe-area-inset-right))] landscape:px-4 landscape:pt-1">
           <div className="rounded-lg bg-white px-2 py-1.5 ring-1 ring-stone-200 landscape:flex landscape:flex-wrap landscape:items-center landscape:justify-between landscape:gap-x-4 landscape:gap-y-1 landscape:py-1">
             <div className="grid grid-cols-2 gap-x-2 gap-y-0.5 landscape:flex landscape:flex-1 landscape:gap-x-4">
               <BmiBlock
