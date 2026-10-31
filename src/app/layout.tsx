@@ -26,12 +26,34 @@ try {
 
 const viewportBoot = `
 try {
+  var baselineH = 0;
+  var baselineT = 0;
+  var baselineO = window.innerWidth > window.innerHeight ? "l" : "p";
+  var focused = function () {
+    var el = document.activeElement;
+    if (!el) return false;
+    var tag = el.tagName;
+    return tag === "INPUT" || tag === "TEXTAREA" || el.isContentEditable;
+  };
   var sync = function () {
     var vv = window.visualViewport;
     var h = Math.round((vv && vv.height) || window.innerHeight || 0);
     var t = Math.round((vv && vv.offsetTop) || 0);
-    if (h > 0) document.documentElement.style.setProperty("--app-height", h + "px");
-    document.documentElement.style.setProperty("--app-top", t + "px");
+    if (h <= 0) return;
+    var o = window.innerWidth > window.innerHeight ? "l" : "p";
+    if (o !== baselineO) {
+      baselineO = o;
+      baselineH = h;
+      baselineT = t;
+    } else if (focused() && baselineH > 0 && h < baselineH * 0.85) {
+      // Virtual keyboard — keep the full-screen shell height (no squash).
+      return;
+    } else {
+      baselineH = h;
+      baselineT = t;
+    }
+    document.documentElement.style.setProperty("--app-height", baselineH + "px");
+    document.documentElement.style.setProperty("--app-top", baselineT + "px");
   };
   sync();
   window.addEventListener("resize", sync);
@@ -63,7 +85,9 @@ export const viewport: Viewport = {
   initialScale: 1,
   viewportFit: "cover",
   colorScheme: "light",
-  interactiveWidget: "resizes-content",
+  // Overlay the keyboard instead of resizing the layout — paired with
+  // ViewportHeight freezing --app-height while an input is focused.
+  interactiveWidget: "overlays-content",
   themeColor: "#f3efe6",
 }
 
