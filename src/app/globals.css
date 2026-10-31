@@ -69,8 +69,14 @@ input[type="range"] {
   background: transparent;
 }
 
+/* Hit area for the thumb; bottom clearance comes from a spacer under the input */
+input[type="range"].metric-slider {
+  height: 1.75rem;
+  padding-inline: 0.15rem;
+}
+
 input[type="range"]::-webkit-slider-runnable-track {
-  height: 0.5rem;
+  height: 0.55rem;
   border-radius: 999px;
   background: #d6d3d1;
 }
@@ -78,9 +84,9 @@ input[type="range"]::-webkit-slider-runnable-track {
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  margin-top: -0.5rem;
-  width: 1.5rem;
-  height: 1.5rem;
+  margin-top: -0.55rem;
+  width: 1.55rem;
+  height: 1.55rem;
   border-radius: 999px;
   background: #1c1917;
   border: 3px solid #fafaf9;
@@ -89,14 +95,14 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 input[type="range"]::-moz-range-track {
-  height: 0.5rem;
+  height: 0.55rem;
   border-radius: 999px;
   background: #d6d3d1;
 }
 
 input[type="range"]::-moz-range-thumb {
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 1.55rem;
+  height: 1.55rem;
   border: 3px solid #fafaf9;
   border-radius: 999px;
   background: #1c1917;
