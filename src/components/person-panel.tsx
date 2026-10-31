@@ -84,12 +84,12 @@ export function PersonPanel({
   return (
     <section
       className={cn(
-        "flex flex-col overflow-hidden rounded-2xl border border-stone-200/90 shadow-sm",
+        "flex flex-col rounded-2xl border border-stone-200/90 shadow-sm",
         soft,
         className
       )}
     >
-      <div className={cn("h-1.5 w-full shrink-0", bar)} aria-hidden="true" />
+      <div className={cn("h-1.5 w-full shrink-0 rounded-t-[0.9rem]", bar)} aria-hidden="true" />
       <div className="flex min-h-0 flex-1 flex-col gap-2.5 px-3 py-3">
         <div className="flex shrink-0 items-center gap-2">
           <h2 className={cn("min-w-0 flex-1 truncate text-[1.1rem] font-bold tracking-tight", ink)}>
