@@ -45,6 +45,7 @@ export function MatchBoard() {
   const band = match ? phmRatioBand(match.phmRatio) : null
   const sizeCaution = match ? phmSizeCaution(match.phmRatio) : null
   const ratioPct = match ? Math.min(140, Math.max(0, match.phmRatio * 100)) : 0
+  const pediatricRecipient = recipient.ageYears < 18
 
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-lg flex-col">
@@ -129,6 +130,15 @@ export function MatchBoard() {
           <div className="bg-teal-700" />
           <div className="bg-rose-700" />
         </div>
+
+        {pediatricRecipient && (
+          <p
+            className="bg-amber-50 px-3 py-1.5 text-center text-[0.75rem] font-semibold leading-snug text-amber-900"
+            role="status"
+          >
+            Not validated for pediatric recipients
+          </p>
+        )}
       </header>
 
       <main className="grid flex-1 grid-cols-1 content-start gap-3 px-3 pt-3 sm:grid-cols-2">
