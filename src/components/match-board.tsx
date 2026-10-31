@@ -48,7 +48,7 @@ export function MatchBoard() {
   const pediatricRecipient = recipient.ageYears < 18
 
   return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-lg flex-col">
+    <div className="mx-auto flex h-dvh max-h-dvh w-full max-w-lg flex-col overflow-hidden">
       <header className="sticky top-0 z-20 border-b border-stone-200 bg-[#efe8dc] pt-[env(safe-area-inset-top)]">
         <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 px-3 pt-2.5 pb-1">
           <h1 className="font-heading justify-self-start text-[1.35rem] leading-none tracking-tight text-stone-900 [transform:translateZ(0)]">
@@ -141,7 +141,7 @@ export function MatchBoard() {
         )}
       </header>
 
-      <main className="grid flex-1 grid-cols-1 content-start gap-3 px-3 pt-3 sm:grid-cols-2">
+      <main className="grid min-h-0 flex-1 grid-cols-1 content-start gap-2 overflow-y-auto px-3 pt-2 pb-2 sm:grid-cols-2">
         <PersonPanel
           title="Recipient"
           accent="recipient"
@@ -152,9 +152,9 @@ export function MatchBoard() {
       </main>
 
       {match && (
-        <footer className="sticky bottom-0 z-20 border-t border-stone-200 bg-[#efe8dc] px-3 pt-2 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
-          <div className="rounded-xl bg-white px-2.5 py-2 ring-1 ring-stone-200">
-            <div className="grid grid-cols-2 gap-2">
+        <footer className="shrink-0 border-t border-stone-200 bg-[#efe8dc] px-2.5 pt-1.5 pb-[max(0.4rem,env(safe-area-inset-bottom))]">
+          <div className="rounded-lg bg-white px-2 py-1.5 ring-1 ring-stone-200">
+            <div className="grid grid-cols-2 gap-x-2 gap-y-0.5">
               <BmiBlock
                 label="Recipient"
                 bmi={match.recipient.bmi}
@@ -170,18 +170,18 @@ export function MatchBoard() {
             </div>
 
             <p
-              className="mt-2 text-center text-[0.95rem] font-bold tabular-nums text-stone-800"
+              className="mt-1 text-center text-[0.8rem] font-bold tabular-nums text-stone-800"
               aria-live="polite"
             >
               Donor wt{" "}
-              <span className="text-[1.15rem] text-stone-900">
+              <span className="text-[0.95rem] text-stone-900">
                 {formatWeightPercent(donor.weightKg, recipient.weightKg)}
               </span>{" "}
               <span className="font-semibold text-stone-500">of recipient</span>
             </p>
 
-            <div className="mt-2 border-t border-stone-200/90 pt-2">
-              <div className="grid grid-cols-2 gap-2">
+            <div className="mt-1 border-t border-stone-200/90 pt-1">
+              <div className="grid grid-cols-2 gap-x-2">
                 <HeartGrams
                   mass={match.recipient.predictedHeartMassG}
                   lv={match.recipient.leftVentricularMassG}
@@ -196,11 +196,11 @@ export function MatchBoard() {
                 />
               </div>
               <p
-                className="mt-2 text-center text-[0.95rem] font-bold tabular-nums text-stone-800"
+                className="mt-1 text-center text-[0.8rem] font-bold tabular-nums text-stone-800"
                 aria-live="polite"
               >
                 BSA ratio{" "}
-                <span className="text-[1.15rem] text-stone-900">
+                <span className="text-[0.95rem] text-stone-900">
                   {formatRatio(match.bsaRatio)}
                 </span>{" "}
                 <span className="font-semibold text-stone-500">donor ÷ recipient</span>
@@ -233,32 +233,32 @@ function BmiBlock({
 }) {
   return (
     <div className="min-w-0">
-      <div className="flex items-center gap-1.5">
+      <div className="flex items-center gap-1">
         <span
           className={cn(
-            "size-2 shrink-0 rounded-full",
+            "size-1.5 shrink-0 rounded-full",
             tone === "recipient" ? "bg-teal-700" : "bg-rose-700"
           )}
         />
         <p
           className={cn(
-            "text-[0.7rem] font-bold tracking-wide uppercase",
+            "text-[0.65rem] font-bold tracking-wide uppercase",
             tone === "recipient" ? "text-teal-800" : "text-rose-800"
           )}
         >
           {label}
         </p>
       </div>
-      <p className="mt-0.5 flex items-baseline gap-1.5">
-        <span className="text-[0.7rem] font-bold tracking-wide text-stone-500 uppercase">
+      <p className="mt-0.5 flex flex-wrap items-baseline gap-x-1.5 gap-y-0">
+        <span className="text-[0.65rem] font-bold tracking-wide text-stone-500 uppercase">
           BMI
         </span>
-        <span className="text-[1.65rem] font-bold leading-none tabular-nums text-stone-900">
+        <span className="text-[1.2rem] font-bold leading-none tabular-nums text-stone-900">
           {formatBmi(bmi)}
         </span>
-      </p>
-      <p className="mt-1 text-[0.8rem] font-semibold tabular-nums text-stone-600">
-        BSA {formatBsa(bsaM2)}
+        <span className="text-[0.7rem] font-semibold tabular-nums text-stone-600">
+          · BSA {formatBsa(bsaM2)}
+        </span>
       </p>
     </div>
   )
@@ -279,16 +279,16 @@ function HeartGrams({
     <div className="min-w-0">
       <p
         className={cn(
-          "text-[0.65rem] font-bold tracking-wide uppercase",
+          "text-[0.6rem] font-bold tracking-wide uppercase",
           tone === "recipient" ? "text-teal-800" : "text-rose-800"
         )}
       >
         Heart
       </p>
-      <p className="text-[1.05rem] font-bold leading-none tabular-nums text-stone-800">
+      <p className="text-[0.95rem] font-bold leading-none tabular-nums text-stone-800">
         {formatGrams(mass)}
       </p>
-      <p className="mt-0.5 text-[0.7rem] font-medium tabular-nums text-stone-500">
+      <p className="mt-0.5 text-[0.65rem] font-medium tabular-nums text-stone-500">
         LV {formatGrams(lv)} · RV {formatGrams(rv)}
       </p>
     </div>
