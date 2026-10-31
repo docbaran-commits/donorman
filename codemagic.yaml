@@ -24,7 +24,7 @@ workflows:
         XCODE_SCHEME: App
         # Numeric Apple ID of the app in App Store Connect (App Information).
         # Replace after you create the app record.
-        APP_STORE_APPLE_ID: "0000000000"
+        APP_STORE_APPLE_ID: "6829261100"
       node: 22
       xcode: latest
 
