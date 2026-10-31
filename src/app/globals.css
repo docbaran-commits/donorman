@@ -9,6 +9,9 @@
   color-scheme: light;
   --background: #f3efe6;
   --foreground: #1c1917;
+  /* Filled ASAP by viewport-boot / ViewportHeight from visualViewport */
+  --app-height: 100dvh;
+  --app-top: 0px;
 }
 
 html,
@@ -43,7 +46,7 @@ body {
   }
 
   .phone-shell {
-    min-height: 100dvh;
+    min-height: var(--app-height, 100dvh);
   }
 
   .phone-shell > header {
@@ -66,7 +69,7 @@ body {
   .phone-shell {
     max-width: none;
     width: 100%;
-    min-height: 100dvh;
+    min-height: var(--app-height, 100dvh);
   }
 
   .phone-shell > main {
@@ -131,26 +134,19 @@ input[type="number"] {
 }
 
 /*
-  Pin the shell to the visual viewport. iPhone PWAs often leave a dead beige
-  strip under a height:100dvh column; fixed inset + fill-available puts the
-  results footer on the true bottom edge and frees that strip for Donor.
+  Pin the shell to the visual viewport height. Use --app-height (from
+  visualViewport) so the first portrait paint matches the layout you get after
+  rotating to landscape and back — 100dvh alone is wrong on the first iOS frame.
 */
 .phone-shell {
   position: fixed;
-  top: 0;
-  bottom: 0;
+  top: var(--app-top, 0px);
   left: 0;
   right: 0;
   width: 100%;
   max-width: 26.875rem;
-  height: 100%;
-  height: 100dvh;
-  height: 100lvh;
-  height: -webkit-fill-available;
-  max-height: 100%;
-  max-height: 100dvh;
-  max-height: 100lvh;
-  max-height: -webkit-fill-available;
+  height: var(--app-height, 100dvh);
+  max-height: var(--app-height, 100dvh);
   margin-inline: auto;
 }
 
