@@ -148,24 +148,23 @@ export function MatchBoard() {
       </header>
 
       {/*
-        Portrait: flex + h-0/flex-1/basis-0 forces identical panel heights
-        regardless of content (Recipient ft/in vs Donor cm). Landscape: side
-        by side.
+        .panels (globals.css) is a 1fr/1fr grid in portrait so Recipient and
+        Donor get identical outer heights. Landscape: side by side.
       */}
-      <main className="flex min-h-0 flex-1 flex-col gap-2 overflow-hidden px-3 pt-2 pb-1 pl-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))] landscape:grid landscape:grid-cols-2 landscape:grid-rows-1 landscape:gap-3 landscape:px-4 landscape:pt-2 landscape:pb-1">
+      <main className="panels min-h-0 flex-1 gap-2 overflow-hidden px-3 pt-2 pb-1 pl-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))] landscape:gap-3 landscape:px-4 landscape:pt-2 landscape:pb-1">
         <PersonPanel
           title="Recipient"
           accent="recipient"
           value={recipient}
           onChange={setRecipient}
-          className="h-0 min-h-0 w-full flex-1 basis-0 overflow-y-auto overscroll-y-contain landscape:h-auto landscape:min-h-0 landscape:flex-none landscape:basis-auto"
+          className="min-h-0 w-full overflow-y-auto overscroll-y-contain"
         />
         <PersonPanel
           title="Donor"
           accent="donor"
           value={donor}
           onChange={setDonor}
-          className="h-0 min-h-0 w-full flex-1 basis-0 overflow-y-auto overscroll-y-contain landscape:h-auto landscape:min-h-0 landscape:flex-none landscape:basis-auto"
+          className="min-h-0 w-full overflow-y-auto overscroll-y-contain"
         />
       </main>
 
