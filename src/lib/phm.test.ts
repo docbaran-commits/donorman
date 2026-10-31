@@ -6,6 +6,7 @@ import {
   MIN_WEIGHT_KG,
   MIN_WEIGHT_LB,
   bodyMassIndex,
+  bodySurfaceArea,
   combineFeetInches,
   isValidAdultMetrics,
   leftVentricularMassG,
@@ -32,6 +33,32 @@ describe("units", () => {
 describe("BMI", () => {
   it("matches the kg/m² definition", () => {
     assert.ok(Math.abs(bodyMassIndex(1.75, 80) - 26.122448979) < 1e-6)
+  })
+})
+
+describe("BSA", () => {
+  it("uses the DuBois formula", () => {
+    const expected = 0.007184 * 80 ** 0.425 * 175 ** 0.725
+    assert.ok(Math.abs(bodySurfaceArea(1.75, 80) - expected) < 1e-9)
+  })
+
+  it("includes BSA and donor/recipient BSA ratio in match results", () => {
+    const recipient = {
+      sex: "male" as const,
+      ageYears: 55,
+      heightM: 1.8,
+      weightKg: 90,
+    }
+    const donor = {
+      sex: "female" as const,
+      ageYears: 40,
+      heightM: 1.65,
+      weightKg: 65,
+    }
+    const match = matchDonorRecipient(recipient, donor)
+    assert.ok(Math.abs(match.recipient.bsaM2 - bodySurfaceArea(1.8, 90)) < 1e-9)
+    assert.ok(Math.abs(match.donor.bsaM2 - bodySurfaceArea(1.65, 65)) < 1e-9)
+    assert.ok(Math.abs(match.bsaRatio - match.donor.bsaM2 / match.recipient.bsaM2) < 1e-9)
   })
 })
 

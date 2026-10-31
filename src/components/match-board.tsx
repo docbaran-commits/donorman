@@ -7,6 +7,7 @@ import {
   PHM_OVERSIZE_RATIO,
   PHM_UNDERSIZE_RATIO,
   formatBmi,
+  formatBsa,
   formatGrams,
   formatPercent,
   formatRatio,
@@ -147,9 +148,15 @@ export function MatchBoard() {
               <BmiBlock
                 label="Recipient"
                 bmi={match.recipient.bmi}
+                bsaM2={match.recipient.bsaM2}
                 tone="recipient"
               />
-              <BmiBlock label="Donor" bmi={match.donor.bmi} tone="donor" />
+              <BmiBlock
+                label="Donor"
+                bmi={match.donor.bmi}
+                bsaM2={match.donor.bsaM2}
+                tone="donor"
+              />
             </div>
 
             <p
@@ -163,19 +170,31 @@ export function MatchBoard() {
               <span className="font-semibold text-stone-500">of recipient</span>
             </p>
 
-            <div className="mt-2 grid grid-cols-2 gap-2 border-t border-stone-200/90 pt-2">
-              <HeartGrams
-                mass={match.recipient.predictedHeartMassG}
-                lv={match.recipient.leftVentricularMassG}
-                rv={match.recipient.rightVentricularMassG}
-                tone="recipient"
-              />
-              <HeartGrams
-                mass={match.donor.predictedHeartMassG}
-                lv={match.donor.leftVentricularMassG}
-                rv={match.donor.rightVentricularMassG}
-                tone="donor"
-              />
+            <div className="mt-2 border-t border-stone-200/90 pt-2">
+              <div className="grid grid-cols-2 gap-2">
+                <HeartGrams
+                  mass={match.recipient.predictedHeartMassG}
+                  lv={match.recipient.leftVentricularMassG}
+                  rv={match.recipient.rightVentricularMassG}
+                  tone="recipient"
+                />
+                <HeartGrams
+                  mass={match.donor.predictedHeartMassG}
+                  lv={match.donor.leftVentricularMassG}
+                  rv={match.donor.rightVentricularMassG}
+                  tone="donor"
+                />
+              </div>
+              <p
+                className="mt-2 text-center text-[0.95rem] font-bold tabular-nums text-stone-800"
+                aria-live="polite"
+              >
+                BSA ratio{" "}
+                <span className="text-[1.15rem] text-stone-900">
+                  {formatRatio(match.bsaRatio)}
+                </span>{" "}
+                <span className="font-semibold text-stone-500">donor ÷ recipient</span>
+              </p>
             </div>
           </div>
         </footer>
@@ -194,10 +213,12 @@ function formatWeightPercent(donorKg: number, recipientKg: number) {
 function BmiBlock({
   label,
   bmi,
+  bsaM2,
   tone,
 }: {
   label: string
   bmi: number
+  bsaM2: number
   tone: "recipient" | "donor"
 }) {
   return (
@@ -225,6 +246,9 @@ function BmiBlock({
         <span className="text-[1.65rem] font-bold leading-none tabular-nums text-stone-900">
           {formatBmi(bmi)}
         </span>
+      </p>
+      <p className="mt-1 text-[0.8rem] font-semibold tabular-nums text-stone-600">
+        BSA {formatBsa(bsaM2)}
       </p>
     </div>
   )

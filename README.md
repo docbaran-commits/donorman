@@ -7,8 +7,8 @@ Enter **recipient** and **donor** sex, age, height, and weight. Height and weigh
 ## What it shows
 
 - Predicted heart mass (LV + RV) for each person
-- BMI for each person
-- Donor ÷ recipient PHM ratio
+- BMI and body surface area (DuBois) for each person
+- Donor ÷ recipient PHM ratio and BSA ratio
 - Percent difference vs recipient (UNOS online calculator convention)
 - Caution labels when PHM is undersized (&lt; 0.86) or oversized (&gt; 1.2)
 

@@ -18,6 +18,8 @@ export type PhmBreakdown = {
   rightVentricularMassG: number
   predictedHeartMassG: number
   bmi: number
+  /** Body surface area in m² (DuBois & DuBois). */
+  bsaM2: number
 }
 
 export type MatchResult = {
@@ -27,6 +29,8 @@ export type MatchResult = {
   phmRatio: number
   /** ((donor − recipient) / recipient) × 100 — UNOS online calculator convention */
   phmPercentDifference: number
+  /** donor BSA / recipient BSA */
+  bsaRatio: number
 }
 
 const LB_PER_KG = 2.2046226218
@@ -78,6 +82,16 @@ export function bodyMassIndex(heightM: number, weightKg: number) {
 }
 
 /**
+ * Body surface area (m²) — DuBois & DuBois (1916).
+ * BSA = 0.007184 × weight_kg^0.425 × height_cm^0.725
+ */
+export function bodySurfaceArea(heightM: number, weightKg: number) {
+  if (heightM <= 0 || weightKg <= 0) return NaN
+  const heightCm = mToCm(heightM)
+  return 0.007184 * weightKg ** 0.425 * heightCm ** 0.725
+}
+
+/**
  * Left ventricular mass (g) from Bluemke et al. / MESA.
  * Height in meters, weight in kg.
  */
@@ -117,6 +131,7 @@ export function predictedHeartMass(person: PersonMetrics): PhmBreakdown {
     rightVentricularMassG: rightVentricularMassGValue,
     predictedHeartMassG: leftVentricularMassGValue + rightVentricularMassGValue,
     bmi: bodyMassIndex(person.heightM, person.weightKg),
+    bsaM2: bodySurfaceArea(person.heightM, person.weightKg),
   }
 }
 
@@ -136,11 +151,14 @@ export function matchDonorRecipient(
           recipientBreakdown.predictedHeartMassG) *
         100
       : NaN
+  const bsaRatio =
+    recipientBreakdown.bsaM2 > 0 ? donorBreakdown.bsaM2 / recipientBreakdown.bsaM2 : NaN
   return {
     recipient: recipientBreakdown,
     donor: donorBreakdown,
     phmRatio,
     phmPercentDifference,
+    bsaRatio,
   }
 }
 
@@ -216,6 +234,11 @@ export function formatGrams(g: number) {
 export function formatBmi(bmi: number) {
   if (!Number.isFinite(bmi)) return "—"
   return bmi.toFixed(1)
+}
+
+export function formatBsa(bsaM2: number) {
+  if (!Number.isFinite(bsaM2)) return "—"
+  return `${bsaM2.toFixed(2)} m²`
 }
 
 export function formatRatio(ratio: number) {
