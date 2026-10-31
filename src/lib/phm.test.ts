@@ -59,6 +59,7 @@ describe("BSA", () => {
     assert.ok(Math.abs(match.recipient.bsaM2 - bodySurfaceArea(1.8, 90)) < 1e-9)
     assert.ok(Math.abs(match.donor.bsaM2 - bodySurfaceArea(1.65, 65)) < 1e-9)
     assert.ok(Math.abs(match.bsaRatio - match.donor.bsaM2 / match.recipient.bsaM2) < 1e-9)
+    assert.ok(Math.abs(match.bmiRatio - match.donor.bmi / match.recipient.bmi) < 1e-9)
   })
 })
 

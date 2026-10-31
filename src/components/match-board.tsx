@@ -196,14 +196,27 @@ export function MatchBoard() {
                 />
               </div>
               <p
-                className="mt-1 text-center text-[0.8rem] font-bold tabular-nums text-stone-800"
+                className="mt-1 flex flex-wrap items-baseline justify-center gap-x-2 gap-y-0.5 text-center text-[0.8rem] font-bold tabular-nums text-stone-800"
                 aria-live="polite"
               >
-                BSA ratio{" "}
-                <span className="text-[0.95rem] text-stone-900">
-                  {formatRatio(match.bsaRatio)}
-                </span>{" "}
-                <span className="font-semibold text-stone-500">donor ÷ recipient</span>
+                <span>
+                  BSA{" "}
+                  <span className="text-[0.95rem] text-stone-900">
+                    {formatRatio(match.bsaRatio)}
+                  </span>
+                </span>
+                <span className="text-stone-300" aria-hidden="true">
+                  ·
+                </span>
+                <span>
+                  BMI{" "}
+                  <span className="text-[0.95rem] text-stone-900">
+                    {formatRatio(match.bmiRatio)}
+                  </span>
+                </span>
+                <span className="w-full text-[0.7rem] font-semibold text-stone-500">
+                  donor ÷ recipient
+                </span>
               </p>
             </div>
           </div>

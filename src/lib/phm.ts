@@ -31,6 +31,8 @@ export type MatchResult = {
   phmPercentDifference: number
   /** donor BSA / recipient BSA */
   bsaRatio: number
+  /** donor BMI / recipient BMI */
+  bmiRatio: number
 }
 
 const LB_PER_KG = 2.2046226218
@@ -153,12 +155,15 @@ export function matchDonorRecipient(
       : NaN
   const bsaRatio =
     recipientBreakdown.bsaM2 > 0 ? donorBreakdown.bsaM2 / recipientBreakdown.bsaM2 : NaN
+  const bmiRatio =
+    recipientBreakdown.bmi > 0 ? donorBreakdown.bmi / recipientBreakdown.bmi : NaN
   return {
     recipient: recipientBreakdown,
     donor: donorBreakdown,
     phmRatio,
     phmPercentDifference,
     bsaRatio,
+    bmiRatio,
   }
 }
 
