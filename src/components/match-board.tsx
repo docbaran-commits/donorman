@@ -148,10 +148,10 @@ export function MatchBoard() {
       </header>
 
       {/*
-        Donor (middle) gets a larger row share. Free height stays in the panels;
-        the footer below is content-sized only so it cannot climb into Donor.
+        Equal portrait rows so Recipient matches Donor height. Footer stays
+        compact below so both panels keep the roomy size.
       */}
-      <main className="grid min-h-0 flex-1 grid-rows-[minmax(0,1fr)_minmax(0,1.2fr)] gap-2 overflow-hidden px-3 pt-2 pb-1 pl-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))] landscape:grid-cols-2 landscape:grid-rows-1 landscape:gap-3 landscape:px-4 landscape:pt-2 landscape:pb-1">
+      <main className="grid min-h-0 flex-1 grid-rows-2 gap-2 overflow-hidden px-3 pt-2 pb-1 pl-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))] landscape:grid-cols-2 landscape:grid-rows-1 landscape:gap-3 landscape:px-4 landscape:pt-2 landscape:pb-1">
         <PersonPanel
           title="Recipient"
           accent="recipient"
@@ -169,14 +169,9 @@ export function MatchBoard() {
       </main>
 
       {match && (
-        <footer className="shrink-0 border-t border-stone-200 bg-white px-2.5 pt-1.5 pb-2 pl-[max(0.625rem,env(safe-area-inset-left))] pr-[max(0.625rem,env(safe-area-inset-right))] landscape:px-4 landscape:pt-1 landscape:pb-1.5">
-          {/*
-            Content-sized only — no safe-area padding that inflates empty white and
-            shoves Donor. The fixed .phone-shell pins this strip to the real screen
-            bottom; a short pb-2 clears the home indicator without a tall void.
-          */}
+        <footer className="shrink-0 border-t border-stone-200 bg-white px-2.5 pt-1 pb-1.5 pl-[max(0.625rem,env(safe-area-inset-left))] pr-[max(0.625rem,env(safe-area-inset-right))] landscape:px-4 landscape:pt-1 landscape:pb-1">
           <div className="landscape:flex landscape:flex-wrap landscape:items-center landscape:justify-between landscape:gap-x-4 landscape:gap-y-1">
-            <div className="grid grid-cols-2 gap-x-2 gap-y-0.5 landscape:flex landscape:flex-1 landscape:gap-x-4">
+            <div className="grid grid-cols-2 gap-x-2 gap-y-0 landscape:flex landscape:flex-1 landscape:gap-x-4">
               <BmiBlock
                 label="Recipient"
                 bmi={match.recipient.bmi}
@@ -192,7 +187,7 @@ export function MatchBoard() {
             </div>
 
             <p
-              className="mt-1 text-center text-[0.8rem] font-bold tabular-nums text-stone-800 landscape:mt-0 landscape:shrink-0"
+              className="mt-0.5 text-center text-[0.8rem] font-bold tabular-nums text-stone-800 landscape:mt-0 landscape:shrink-0"
               aria-live="polite"
             >
               Donor wt{" "}
@@ -202,7 +197,7 @@ export function MatchBoard() {
               <span className="font-semibold text-stone-500">of recipient</span>
             </p>
 
-            <div className="mt-1 border-t border-stone-200/90 pt-1 landscape:mt-0 landscape:flex landscape:flex-1 landscape:items-center landscape:justify-end landscape:gap-x-4 landscape:border-t-0 landscape:pt-0">
+            <div className="mt-0.5 border-t border-stone-200/90 pt-0.5 landscape:mt-0 landscape:flex landscape:flex-1 landscape:items-center landscape:justify-end landscape:gap-x-4 landscape:border-t-0 landscape:pt-0">
               <div className="grid grid-cols-2 gap-x-2 landscape:flex landscape:gap-x-4">
                 <HeartGrams
                   mass={match.recipient.predictedHeartMassG}
@@ -218,7 +213,7 @@ export function MatchBoard() {
                 />
               </div>
               <p
-                className="mt-1 flex flex-wrap items-baseline justify-center gap-x-2 gap-y-0.5 text-center text-[0.8rem] font-bold tabular-nums text-stone-800 landscape:mt-0 landscape:flex-col landscape:items-end landscape:gap-0"
+                className="mt-0.5 flex flex-wrap items-baseline justify-center gap-x-2 gap-y-0 text-center text-[0.8rem] font-bold tabular-nums text-stone-800 landscape:mt-0 landscape:flex-col landscape:items-end landscape:gap-0"
                 aria-live="polite"
               >
                 <span>
