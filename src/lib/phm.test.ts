@@ -1,10 +1,15 @@
 import assert from "node:assert/strict"
 import { describe, it } from "node:test"
 import {
+  MAX_WEIGHT_KG,
+  MAX_WEIGHT_LB,
+  MIN_WEIGHT_KG,
+  MIN_WEIGHT_LB,
   bodyMassIndex,
   combineFeetInches,
   isValidAdultMetrics,
   leftVentricularMassG,
+  lbToKg,
   matchDonorRecipient,
   phmRatioBand,
   phmSizeCaution,
@@ -112,5 +117,21 @@ describe("PHM", () => {
     assert.equal(isValidAdultMetrics({ ...base, ageYears: 80 }), true)
     assert.equal(isValidAdultMetrics({ ...base, ageYears: 4 }), false)
     assert.equal(isValidAdultMetrics({ ...base, ageYears: 81 }), false)
+  })
+
+  it("accepts weights from 20 lb to 600 lb", () => {
+    assert.equal(MIN_WEIGHT_LB, 20)
+    assert.equal(MAX_WEIGHT_LB, 600)
+    assert.equal(MIN_WEIGHT_KG, Math.round(lbToKg(20)))
+    assert.equal(MAX_WEIGHT_KG, Math.round(lbToKg(600)))
+    const base = {
+      sex: "male" as const,
+      ageYears: 40,
+      heightM: 1.7,
+    }
+    assert.equal(isValidAdultMetrics({ ...base, weightKg: MIN_WEIGHT_KG }), true)
+    assert.equal(isValidAdultMetrics({ ...base, weightKg: MAX_WEIGHT_KG }), true)
+    assert.equal(isValidAdultMetrics({ ...base, weightKg: MIN_WEIGHT_KG - 1 }), false)
+    assert.equal(isValidAdultMetrics({ ...base, weightKg: MAX_WEIGHT_KG + 1 }), false)
   })
 })

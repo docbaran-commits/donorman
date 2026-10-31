@@ -156,6 +156,12 @@ export const PHM_SEVERE_UNDERSIZE_RATIO = 0.75
 export const MIN_AGE_YEARS = 5
 export const MAX_AGE_YEARS = 80
 
+/** Body-weight entry range (donor and recipient). */
+export const MIN_WEIGHT_LB = 20
+export const MAX_WEIGHT_LB = 600
+export const MIN_WEIGHT_KG = Math.round(lbToKg(MIN_WEIGHT_LB))
+export const MAX_WEIGHT_KG = Math.round(lbToKg(MAX_WEIGHT_LB))
+
 export type PhmRatioBand = "ok" | "caution" | "severe"
 export type PhmSizeCaution = "undersized" | "oversized" | null
 
@@ -192,7 +198,11 @@ export function isValidAdultMetrics(person: PersonMetrics) {
   if (!Number.isFinite(person.heightM) || person.heightM < 0.9 || person.heightM > 2.3) {
     return false
   }
-  if (!Number.isFinite(person.weightKg) || person.weightKg < 15 || person.weightKg > 250) {
+  if (
+    !Number.isFinite(person.weightKg) ||
+    person.weightKg < MIN_WEIGHT_KG ||
+    person.weightKg > MAX_WEIGHT_KG
+  ) {
     return false
   }
   return true

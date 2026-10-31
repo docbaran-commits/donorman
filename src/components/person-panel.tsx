@@ -4,6 +4,10 @@ import { useState } from "react"
 
 import { FemaleIcon, MaleIcon } from "@/components/sex-icons"
 import {
+  MAX_WEIGHT_KG,
+  MAX_WEIGHT_LB,
+  MIN_WEIGHT_KG,
+  MIN_WEIGHT_LB,
   cmToM,
   combineFeetInches,
   kgToLb,
@@ -245,22 +249,22 @@ export function PersonPanel({
             {value.weightUnit === "lb" ? (
               <TinyNumber
                 id={`${title}-lb`}
-                min={80}
-                max={400}
+                min={MIN_WEIGHT_LB}
+                max={MAX_WEIGHT_LB}
                 step={1}
-                value={clamp(lb, 80, 400)}
+                value={clamp(lb, MIN_WEIGHT_LB, MAX_WEIGHT_LB)}
                 onChange={(nextLb) => patch({ weightKg: lbToKg(Math.round(nextLb)) })}
-                className="h-8 w-12"
+                className="h-8 w-14"
               />
             ) : (
               <TinyNumber
                 id={`${title}-kg`}
-                min={35}
-                max={180}
+                min={MIN_WEIGHT_KG}
+                max={MAX_WEIGHT_KG}
                 step={1}
-                value={clamp(kg, 35, 180)}
+                value={clamp(kg, MIN_WEIGHT_KG, MAX_WEIGHT_KG)}
                 onChange={(weightKg) => patch({ weightKg: Math.round(weightKg) })}
-                className="h-8 w-12"
+                className="h-8 w-14"
               />
             )}
           </div>
@@ -268,10 +272,10 @@ export function PersonPanel({
             <input
               type="range"
               aria-label={`${title} lb`}
-              min={80}
-              max={400}
+              min={MIN_WEIGHT_LB}
+              max={MAX_WEIGHT_LB}
               step={1}
-              value={clamp(lb, 80, 400)}
+              value={clamp(lb, MIN_WEIGHT_LB, MAX_WEIGHT_LB)}
               onInput={(event) =>
                 patch({ weightKg: lbToKg(Number((event.target as HTMLInputElement).value)) })
               }
@@ -282,10 +286,10 @@ export function PersonPanel({
             <input
               type="range"
               aria-label={`${title} kg`}
-              min={35}
-              max={180}
+              min={MIN_WEIGHT_KG}
+              max={MAX_WEIGHT_KG}
               step={1}
-              value={clamp(kg, 35, 180)}
+              value={clamp(kg, MIN_WEIGHT_KG, MAX_WEIGHT_KG)}
               onInput={(event) =>
                 patch({ weightKg: Number((event.target as HTMLInputElement).value) })
               }
