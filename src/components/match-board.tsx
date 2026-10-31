@@ -47,9 +47,9 @@ export function MatchBoard() {
 
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-lg flex-col">
-      <header className="sticky top-0 z-20 border-b border-stone-200/80 bg-[#efe8dc]/95 pt-[env(safe-area-inset-top)] backdrop-blur-md">
+      <header className="sticky top-0 z-20 border-b border-stone-200 bg-[#efe8dc] pt-[env(safe-area-inset-top)]">
         <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 px-3 pt-2.5 pb-1">
-          <h1 className="font-heading justify-self-start text-[1.35rem] leading-none tracking-tight text-stone-900">
+          <h1 className="font-heading justify-self-start text-[1.35rem] leading-none tracking-tight text-stone-900 [transform:translateZ(0)]">
             DonorMan
           </h1>
           {match ? (
@@ -87,7 +87,7 @@ export function MatchBoard() {
         </div>
 
         {match && (
-          <div className="space-y-1 bg-white/90 px-3 py-1.5">
+          <div className="space-y-1 bg-white px-3 py-1.5">
             <div className="relative h-2 overflow-hidden rounded-full bg-stone-200">
               <div
                 className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-teal-700 to-rose-700 transition-[width] duration-150"
@@ -141,8 +141,8 @@ export function MatchBoard() {
       </main>
 
       {match && (
-        <footer className="sticky bottom-0 z-20 border-t border-stone-200/80 bg-[#efe8dc]/95 px-3 pt-2 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur-md">
-          <div className="rounded-xl bg-white/95 px-2.5 py-2 ring-1 ring-stone-200">
+        <footer className="sticky bottom-0 z-20 border-t border-stone-200 bg-[#efe8dc] px-3 pt-2 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+          <div className="rounded-xl bg-white px-2.5 py-2 ring-1 ring-stone-200">
             <div className="grid grid-cols-2 gap-2">
               <BmiBlock
                 label="Recipient"
