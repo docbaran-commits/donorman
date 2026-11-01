@@ -18,7 +18,6 @@ export function ViewportHeight() {
   useEffect(() => {
     const root = document.documentElement
     let baselineHeight = 0
-    let baselineTop = 0
     let baselineOrientation =
       window.innerWidth > window.innerHeight ? "landscape" : "portrait"
     let editing: EditingPanel = null
@@ -26,6 +25,12 @@ export function ViewportHeight() {
 
     const orientation = () =>
       window.innerWidth > window.innerHeight ? "landscape" : "portrait"
+
+    /** Snap to device pixels so fixed header text stays sharp on retina iOS. */
+    const snapCssPx = (n: number) => {
+      const dpr = window.devicePixelRatio || 1
+      return Math.round(n * dpr) / dpr
+    }
 
     const focusedEditable = () => {
       const el = document.activeElement
@@ -52,9 +57,13 @@ export function ViewportHeight() {
       else node.removeAttribute("data-editing")
     }
 
-    const applyShellFrame = (height: number, top: number) => {
-      if (height > 0) root.style.setProperty("--app-height", `${height}px`)
-      root.style.setProperty("--app-top", `${top}px`)
+    const applyShellFrame = (height: number) => {
+      if (height > 0) {
+        root.style.setProperty("--app-height", `${snapCssPx(height)}px`)
+      }
+      // Never drive --app-top from visualViewport.offsetTop — that reintroduces
+      // the blurry DonorMan / PHM header on iOS.
+      root.style.setProperty("--app-top", "0px")
     }
 
     const ensureFieldVisible = () => {
@@ -68,17 +77,17 @@ export function ViewportHeight() {
 
     const sync = () => {
       const vv = window.visualViewport
+      // Prefer layout height when keyboard is closed; when open, vv.height is
+      // the area above the keyboard. Ignore offsetTop for positioning.
       const height = Math.round(vv?.height ?? window.innerHeight)
-      const top = Math.round(vv?.offsetTop ?? 0)
       if (height <= 0) return
 
       const orient = orientation()
       if (orient !== baselineOrientation) {
         baselineOrientation = orient
         baselineHeight = height
-        baselineTop = top
         setEditing(null)
-        applyShellFrame(baselineHeight, baselineTop)
+        applyShellFrame(baselineHeight)
         return
       }
 
@@ -92,7 +101,7 @@ export function ViewportHeight() {
       if (panel && (keyboardLikely || editing === panel)) {
         // Focus mode: shell = area above keyboard; only the active panel shows.
         setEditing(panel)
-        applyShellFrame(height, top)
+        applyShellFrame(height)
         ensureFieldVisible()
         return
       }
@@ -101,9 +110,8 @@ export function ViewportHeight() {
       if (editing) setEditing(null)
       if (height >= baselineHeight || baselineHeight === 0 || !el) {
         baselineHeight = height
-        baselineTop = top
       }
-      applyShellFrame(baselineHeight, baselineTop)
+      applyShellFrame(baselineHeight)
     }
 
     sync()
