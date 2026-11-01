@@ -190,11 +190,10 @@ export function MatchBoard() {
               className="mt-0.5 text-center text-[0.8rem] font-bold tabular-nums text-stone-800 landscape:mt-0 landscape:shrink-0"
               aria-live="polite"
             >
-              Donor wt{" "}
+              <span className="font-semibold text-stone-500">donor / recipient ratio</span>{" "}
               <span className="text-[0.95rem] text-stone-900">
                 {formatWeightPercent(donor.weightKg, recipient.weightKg)}
-              </span>{" "}
-              <span className="font-semibold text-stone-500">of recipient</span>
+              </span>
             </p>
 
             <div className="mt-0.5 border-t border-stone-200/90 pt-0.5 landscape:mt-0 landscape:flex landscape:flex-1 landscape:items-center landscape:justify-end landscape:gap-x-4 landscape:border-t-0 landscape:pt-0">
