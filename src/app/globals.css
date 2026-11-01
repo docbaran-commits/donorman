@@ -147,7 +147,9 @@ input[type="number"] {
 */
 .phone-shell {
   position: fixed;
-  top: var(--app-top, 0px);
+  /* Keep top at 0 — following visualViewport.offsetTop puts the shell on
+     subpixel bounds and makes the DonorMan / PHM header text blurry on iOS. */
+  top: 0;
   left: 0;
   right: 0;
   width: 100%;
@@ -155,6 +157,18 @@ input[type="number"] {
   height: var(--app-height, 100dvh);
   max-height: var(--app-height, 100dvh);
   margin-inline: auto;
+  /* Own compositing layer; avoids Safari blurring fixed UI chrome */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+/* Same sharpening that fixed the sticky header before (no backdrop-blur,
+   opaque fill, promoted layer so Fraunces / PHM numerals stay crisp). */
+.phone-shell > header.phone-header {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 
 /*

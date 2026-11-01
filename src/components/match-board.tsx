@@ -55,9 +55,9 @@ export function MatchBoard() {
         stays phone-width; landscape goes full width with side-by-side panels.
       */}
       <div className="phone-shell flex flex-col overflow-hidden bg-[#f3efe6] min-[500px]:border-r min-[500px]:border-stone-300/70 min-[500px]:bg-[#f3efe6]/80 min-[500px]:shadow-[8px_0_28px_rgba(28,25,23,0.06)] landscape:border-0 landscape:bg-[#f3efe6] landscape:shadow-none">
-      <header className="shrink-0 border-b border-stone-200 bg-[#efe8dc] pt-[max(0.25rem,env(safe-area-inset-top))] pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]">
+      <header className="phone-header shrink-0 border-b border-stone-200 bg-[#efe8dc] pt-[max(0.25rem,env(safe-area-inset-top))] pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]">
         <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 px-3 pt-2.5 pb-1 landscape:px-4 landscape:pt-1.5 landscape:pb-0.5">
-          <h1 className="font-heading justify-self-start text-[1.35rem] leading-none tracking-tight text-stone-900 landscape:text-[1.2rem] [transform:translateZ(0)]">
+          <h1 className="font-heading justify-self-start text-[1.35rem] leading-none tracking-tight text-stone-900 landscape:text-[1.2rem]">
             DonorMan
           </h1>
           {match ? (

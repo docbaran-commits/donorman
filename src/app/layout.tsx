@@ -27,26 +27,27 @@ try {
 const viewportBoot = `
 try {
   var baselineH = 0;
-  var baselineT = 0;
   var baselineO = window.innerWidth > window.innerHeight ? "l" : "p";
+  var snap = function (n) {
+    var dpr = window.devicePixelRatio || 1;
+    return Math.round(n * dpr) / dpr;
+  };
   var sync = function () {
     var vv = window.visualViewport;
     var h = Math.round((vv && vv.height) || window.innerHeight || 0);
-    var t = Math.round((vv && vv.offsetTop) || 0);
     if (h <= 0) return;
     var o = window.innerWidth > window.innerHeight ? "l" : "p";
     if (o !== baselineO) {
       baselineO = o;
       baselineH = h;
-      baselineT = t;
     } else if (!document.querySelector(".phone-shell[data-editing]")) {
       // Full layout baseline; focus-mode sizing is handled by ViewportHeight.
       baselineH = h;
-      baselineT = t;
     }
     if (!document.querySelector(".phone-shell[data-editing]")) {
-      document.documentElement.style.setProperty("--app-height", baselineH + "px");
-      document.documentElement.style.setProperty("--app-top", baselineT + "px");
+      document.documentElement.style.setProperty("--app-height", snap(baselineH) + "px");
+      // Keep top at 0 — offsetTop makes the header text blurry on iOS.
+      document.documentElement.style.setProperty("--app-top", "0px");
     }
   };
   sync();
