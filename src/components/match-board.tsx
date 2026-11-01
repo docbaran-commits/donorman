@@ -170,8 +170,8 @@ export function MatchBoard() {
 
       {match && (
         <footer className="shrink-0 border-t border-stone-200 bg-white px-2.5 pt-1 pb-1.5 pl-[max(0.625rem,env(safe-area-inset-left))] pr-[max(0.625rem,env(safe-area-inset-right))] landscape:px-4 landscape:pt-1 landscape:pb-1">
-          <div className="landscape:flex landscape:flex-wrap landscape:items-center landscape:justify-between landscape:gap-x-4 landscape:gap-y-1">
-            <div className="grid grid-cols-2 gap-x-2 gap-y-0 landscape:flex landscape:flex-1 landscape:gap-x-4">
+          <div className="landscape:flex landscape:flex-wrap landscape:items-center landscape:justify-center landscape:gap-x-4 landscape:gap-y-1">
+            <div className="grid grid-cols-2 place-items-center gap-x-2 gap-y-0 landscape:flex landscape:flex-1 landscape:justify-center landscape:gap-x-4">
               <BmiBlock
                 label="Recipient"
                 bmi={match.recipient.bmi}
@@ -196,8 +196,8 @@ export function MatchBoard() {
               </span>
             </p>
 
-            <div className="mt-0.5 border-t border-stone-200/90 pt-0.5 landscape:mt-0 landscape:flex landscape:flex-1 landscape:justify-end landscape:border-t-0 landscape:pt-0">
-              <div className="grid grid-cols-2 gap-x-2 landscape:flex landscape:gap-x-4">
+            <div className="mt-0.5 border-t border-stone-200/90 pt-0.5 landscape:mt-0 landscape:flex landscape:flex-1 landscape:justify-center landscape:border-t-0 landscape:pt-0">
+              <div className="grid grid-cols-2 place-items-center gap-x-2 landscape:flex landscape:justify-center landscape:gap-x-4">
                 <HeartGrams
                   mass={match.recipient.predictedHeartMassG}
                   lv={match.recipient.leftVentricularMassG}
@@ -239,8 +239,8 @@ function BmiBlock({
   tone: "recipient" | "donor"
 }) {
   return (
-    <div className="min-w-0">
-      <div className="flex items-center gap-1">
+    <div className="min-w-0 text-center">
+      <div className="flex items-center justify-center gap-1">
         <span
           className={cn(
             "size-1.5 shrink-0 rounded-full",
@@ -256,7 +256,7 @@ function BmiBlock({
           {label}
         </p>
       </div>
-      <p className="mt-0.5 flex flex-wrap items-baseline gap-x-1.5 gap-y-0">
+      <p className="mt-0.5 flex flex-wrap items-baseline justify-center gap-x-1.5 gap-y-0">
         <span className="text-[0.65rem] font-bold tracking-wide text-stone-500 uppercase">
           BMI
         </span>
@@ -283,7 +283,7 @@ function HeartGrams({
   tone: "recipient" | "donor"
 }) {
   return (
-    <div className="min-w-0">
+    <div className="min-w-0 text-center">
       <p
         className={cn(
           "text-[0.6rem] font-bold tracking-wide uppercase",
