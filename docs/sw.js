@@ -1,4 +1,4 @@
-const CACHE = "donorman-shell-v39"
+const CACHE = "donorman-shell-v40"
 
 self.addEventListener("install", (event) => {
   event.waitUntil(self.skipWaiting())
