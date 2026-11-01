@@ -162,27 +162,41 @@ input[type="number"] {
 }
 
 /*
-  Promote ONLY the header (not the shell). Nested translateZ(shell)+translateZ(header)
-  was making DonorMan / PHM look soft again after rubber-band / keyboard.
+  Header text sharpness on iOS: avoid ANY transform/compositing layer here.
+  translateZ / translate3d on the header (or its titles) softens Fraunces + PHM
+  numerals on retina. Prefer subpixel smoothing + no 3D layer.
 */
 .phone-shell > header.phone-header {
   position: relative;
   z-index: 2;
-  -webkit-transform: translate3d(0, 0, 0);
-  transform: translate3d(0, 0, 0);
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
   -webkit-font-smoothing: subpixel-antialiased;
+  -moz-osx-font-smoothing: auto;
+  text-rendering: auto;
+  /* Solid paint — no translucency that triggers backdrop rasterization */
+  background-color: #efe8dc;
+  transform: none !important;
+  -webkit-transform: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  will-change: auto;
 }
 
 .phone-shell > header.phone-header h1,
-.phone-shell > header.phone-header p {
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
+.phone-shell > header.phone-header p,
+.phone-shell > header.phone-header span {
   -webkit-font-smoothing: subpixel-antialiased;
-  text-rendering: geometricPrecision;
+  -moz-osx-font-smoothing: auto;
+  text-rendering: auto;
+  transform: none !important;
+  -webkit-transform: none !important;
+  -webkit-text-stroke: 0;
+  text-shadow: none;
+}
+
+/* Slight optical weight so DonorMan doesn’t look soft at 1.35rem on retina */
+.phone-shell > header.phone-header h1 {
+  letter-spacing: 0;
+  font-weight: 650;
 }
 
 /*
