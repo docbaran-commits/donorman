@@ -196,7 +196,7 @@ export function MatchBoard() {
               </span>
             </p>
 
-            <div className="mt-0.5 border-t border-stone-200/90 pt-0.5 landscape:mt-0 landscape:flex landscape:flex-1 landscape:items-center landscape:justify-end landscape:gap-x-4 landscape:border-t-0 landscape:pt-0">
+            <div className="mt-0.5 border-t border-stone-200/90 pt-0.5 landscape:mt-0 landscape:flex landscape:flex-1 landscape:justify-end landscape:border-t-0 landscape:pt-0">
               <div className="grid grid-cols-2 gap-x-2 landscape:flex landscape:gap-x-4">
                 <HeartGrams
                   mass={match.recipient.predictedHeartMassG}
@@ -211,27 +211,6 @@ export function MatchBoard() {
                   tone="donor"
                 />
               </div>
-              <p
-                className="mt-0.5 flex flex-wrap items-baseline justify-center gap-x-2 gap-y-0 text-center text-[0.8rem] font-bold tabular-nums text-stone-800 landscape:mt-0 landscape:flex-col landscape:items-end landscape:gap-0"
-                aria-live="polite"
-              >
-                <span>
-                  BSA{" "}
-                  <span className="text-[0.95rem] text-stone-900">
-                    {formatRatio(match.bsaRatio)}
-                  </span>
-                  <span className="mx-1 text-stone-300" aria-hidden="true">
-                    ·
-                  </span>
-                  BMI{" "}
-                  <span className="text-[0.95rem] text-stone-900">
-                    {formatRatio(match.bmiRatio)}
-                  </span>
-                </span>
-                <span className="w-full text-[0.7rem] font-semibold text-stone-500 landscape:w-auto">
-                  donor ÷ recipient
-                </span>
-              </p>
             </div>
           </div>
         </footer>
