@@ -230,7 +230,7 @@ export function MatchBoard() {
                   </span>
                 </span>
                 <span className="w-full text-[0.7rem] font-semibold text-stone-500 landscape:w-auto">
-                  donor / recipient ratio
+                  donor ÷ recipient
                 </span>
               </p>
             </div>
