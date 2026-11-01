@@ -26,12 +26,6 @@ export function ViewportHeight() {
     const orientation = () =>
       window.innerWidth > window.innerHeight ? "landscape" : "portrait"
 
-    /** Snap to device pixels so fixed header text stays sharp on retina iOS. */
-    const snapCssPx = (n: number) => {
-      const dpr = window.devicePixelRatio || 1
-      return Math.round(n * dpr) / dpr
-    }
-
     const focusedEditable = () => {
       const el = document.activeElement
       if (!(el instanceof HTMLElement)) return null
@@ -58,8 +52,9 @@ export function ViewportHeight() {
     }
 
     const applyShellFrame = (height: number) => {
+      // Whole CSS pixels only — fractional heights blur the fixed header on iOS.
       if (height > 0) {
-        root.style.setProperty("--app-height", `${snapCssPx(height)}px`)
+        root.style.setProperty("--app-height", `${Math.round(height)}px`)
       }
       // Never drive --app-top from visualViewport.offsetTop — that reintroduces
       // the blurry DonorMan / PHM header on iOS.
