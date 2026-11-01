@@ -28,10 +28,6 @@ const viewportBoot = `
 try {
   var baselineH = 0;
   var baselineO = window.innerWidth > window.innerHeight ? "l" : "p";
-  var snap = function (n) {
-    var dpr = window.devicePixelRatio || 1;
-    return Math.round(n * dpr) / dpr;
-  };
   var sync = function () {
     var vv = window.visualViewport;
     var h = Math.round((vv && vv.height) || window.innerHeight || 0);
@@ -45,7 +41,8 @@ try {
       baselineH = h;
     }
     if (!document.querySelector(".phone-shell[data-editing]")) {
-      document.documentElement.style.setProperty("--app-height", snap(baselineH) + "px");
+      // Whole CSS pixels — fractional height blurs the header on iOS.
+      document.documentElement.style.setProperty("--app-height", Math.round(baselineH) + "px");
       // Keep top at 0 — offsetTop makes the header text blurry on iOS.
       document.documentElement.style.setProperty("--app-top", "0px");
     }

@@ -154,21 +154,35 @@ input[type="number"] {
   right: 0;
   width: 100%;
   max-width: 26.875rem;
+  /* Integer px only via --app-height; fractional heights blur header text. */
   height: var(--app-height, 100dvh);
   max-height: var(--app-height, 100dvh);
   margin-inline: auto;
-  /* Own compositing layer; avoids Safari blurring fixed UI chrome */
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
+  /* No transform on the shell — nested 3D layers with the header blur text on iOS. */
 }
 
-/* Same sharpening that fixed the sticky header before (no backdrop-blur,
-   opaque fill, promoted layer so Fraunces / PHM numerals stay crisp). */
+/*
+  Promote ONLY the header (not the shell). Nested translateZ(shell)+translateZ(header)
+  was making DonorMan / PHM look soft again after rubber-band / keyboard.
+*/
 .phone-shell > header.phone-header {
+  position: relative;
+  z-index: 2;
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: subpixel-antialiased;
+}
+
+.phone-shell > header.phone-header h1,
+.phone-shell > header.phone-header p {
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
+  -webkit-font-smoothing: subpixel-antialiased;
+  text-rendering: geometricPrecision;
 }
 
 /*
