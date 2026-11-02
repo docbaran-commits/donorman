@@ -57,6 +57,12 @@ DonorMan’s native shell is a Capacitor iOS app (`ios/`) with bundle ID **`com.
 
 After a green build, the IPA appears in App Store Connect → TestFlight (processing can take a few minutes).
 
+### App Store listing assets
+
+Screenshots, 1024 icon, listing copy, and privacy policy live in [`app-store/`](app-store/).  
+See [`app-store/README.md`](app-store/README.md) for the Connect upload checklist.  
+Privacy Policy URL: [https://docbaran-commits.github.io/donorman/privacy/](https://docbaran-commits.github.io/donorman/privacy/)
+
 ### Local iOS project (Mac + Xcode)
 
 ```bash
