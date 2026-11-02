@@ -18,21 +18,24 @@ import {
 } from "@/lib/phm"
 import { cn } from "@/lib/cn"
 
+/** 5 ft 7 in — matches totalInchesToM(5 * 12 + 7). */
+const DEFAULT_HEIGHT_M = 1.7018
+
 const defaultRecipient: PersonDraft = {
   sex: "male",
   ageYears: 55,
-  heightM: 1.78,
-  weightKg: 85,
+  heightM: DEFAULT_HEIGHT_M,
+  weightKg: 70,
   heightUnit: "ftin",
-  weightUnit: "lb",
+  weightUnit: "kg",
 }
 
 const defaultDonor: PersonDraft = {
   sex: "female",
   ageYears: 40,
-  heightM: 1.65,
-  weightKg: 68,
-  heightUnit: "cm",
+  heightM: DEFAULT_HEIGHT_M,
+  weightKg: 70,
+  heightUnit: "ftin",
   weightUnit: "kg",
 }
 
