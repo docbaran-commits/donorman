@@ -1,0 +1,58 @@
+1:"$Sreact.fragment"
+2:"/donorman/_next/static/chunks/1k_-s353zo5kj.js"
+3:I[79520,["$2"],""]
+5:I[49138,["$2"],"ViewportHeight"]
+6:I[39756,["$2"],"default"]
+7:I[37457,["$2"],"default"]
+8:I[84364,["$2"],"PwaRegister"]
+f:"ViewportBoundary"
+10:I[97367,["$2"],"$f"]
+12:"MetadataBoundary"
+13:I[97367,["$2"],"$12"]
+14:"$Sreact.suspense"
+16:I[68027,["$2"],"default",1]
+:HL["/donorman/_next/static/chunks/29xo0ldfajk7r.css","style"]
+4:T4d0,
+try {
+  var baselineH = 0;
+  var baselineO = window.innerWidth > window.innerHeight ? "l" : "p";
+  var sync = function () {
+    var vv = window.visualViewport;
+    var h = Math.round((vv && vv.height) || window.innerHeight || 0);
+    if (h <= 0) return;
+    var o = window.innerWidth > window.innerHeight ? "l" : "p";
+    if (o !== baselineO) {
+      baselineO = o;
+      baselineH = h;
+    } else if (!document.querySelector(".phone-shell[data-editing]")) {
+      // Full layout baseline; focus-mode sizing is handled by ViewportHeight.
+      baselineH = h;
+    }
+    if (!document.querySelector(".phone-shell[data-editing]")) {
+      // Whole CSS pixels — fractional height blurs the header on iOS.
+      document.documentElement.style.setProperty("--app-height", Math.round(baselineH) + "px");
+      // Keep top at 0 — offsetTop makes the header text blurry on iOS.
+      document.documentElement.style.setProperty("--app-top", "0px");
+    }
+  };
+  sync();
+  window.addEventListener("resize", sync);
+  window.addEventListener("orientationchange", sync);
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", sync);
+    window.visualViewport.addEventListener("scroll", sync);
+  }
+} catch (e) {}
+a:X
+b:[["children",{"s":"__PAGE__","h":512,"d":{"r":["$","$1","c",{"children":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":"$0:t:t:d:r:props:children:1:props:children:props:children:3:props:notFound:0:1:props:style","children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],"$Lc","$Ld"]}]}]],null,"$Le"]}],"p":false,"v":null}}]]
+9:[["children",{"s":"/_not-found","h":512,"d":{"r":["$","$1","c",{"children":[null,["$","$L6",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],"p":false,"v":"$a"},"c":"$Qb"}]]
+0:{"P":null,"c":["","_not-found",""],"q":"","i":false,"t":{"t":{"s":"","h":528,"d":{"r":["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/donorman/_next/static/chunks/29xo0ldfajk7r.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}],["$","script","script-0",{"src":"/donorman/_next/static/chunks/1k_-s353zo5kj.js","async":true,"nonce":"$undefined"}]],["$","html",null,{"lang":"en","suppressHydrationWarning":true,"className":"_0e0AoG_variable _IOaqG_variable h-full antialiased","children":["$","body",null,{"className":"min-h-dvh text-[16px] leading-snug tracking-[0.01em]","children":[["$","$L3",null,{"id":"theme-boot","strategy":"beforeInteractive","children":"\ntry {\n  document.documentElement.classList.remove(\"dark\");\n} catch (e) {}\n"}],["$","$L3",null,{"id":"viewport-boot","strategy":"beforeInteractive","children":"$4"}],["$","$L5",null,{}],["$","$L6",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L7",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}],["$","$L8",null,{}]]}]}]]}],"p":false,"v":null},"c":"$Q9"},"h":{"r":["$","$1","h",{"children":[["$","meta",null,{"name":"robots","content":"noindex"}],["$","$L10",null,{"children":"$L11"}],["$","$L13",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$14",null,{"name":"Next.Metadata","children":"$L15"}]}],null]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],"p":false,"v":null}},"m":"$undefined","G":["$16",[["$","link","0",{"rel":"stylesheet","href":"/donorman/_next/static/chunks/29xo0ldfajk7r.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]]],"S":true,"r":"$undefined","s":"$undefined","a":"$undefined","l":"$undefined","p":"$undefined","d":"$undefined","b":"-a_CHLDRL0SfuqNkvhnls"}
+17:I[97367,["$2"],"OutletBoundary"]
+a:C
+c:["$","h1",null,{"className":"next-error-h1","style":"$0:t:t:d:r:props:children:1:props:children:props:children:3:props:notFound:0:1:props:children:props:children:1:props:style","children":404}]
+d:["$","div",null,{"style":"$0:t:t:d:r:props:children:1:props:children:props:children:3:props:notFound:0:1:props:children:props:children:2:props:style","children":["$","h2",null,{"style":"$0:t:t:d:r:props:children:1:props:children:props:children:3:props:notFound:0:1:props:children:props:children:2:props:children:props:style","children":"This page could not be found."}]}]
+e:["$","$L17",null,{"children":["$","$14",null,{"name":"Next.MetadataOutlet","children":"$@18"}]}]
+11:[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=overlays-content"}],["$","meta","2",{"name":"theme-color","content":"#f3efe6"}],["$","meta","3",{"name":"color-scheme","content":"light"}]]
+19:I[27201,["$2"],"IconMark"]
+15:[["$","title","0",{"children":"DonorMan"}],["$","meta","1",{"name":"description","content":"Predicted heart mass matching for donor and recipient sizing in heart transplantation."}],["$","meta","2",{"name":"application-name","content":"DonorMan"}],["$","link","3",{"rel":"manifest","href":"/donorman/manifest.webmanifest","crossOrigin":"$undefined"}],["$","meta","4",{"name":"format-detection","content":"telephone=no"}],["$","meta","5",{"name":"mobile-web-app-capable","content":"yes"}],["$","meta","6",{"name":"apple-mobile-web-app-title","content":"DonorMan"}],["$","meta","7",{"name":"apple-mobile-web-app-status-bar-style","content":"black-translucent"}],["$","link","8",{"rel":"icon","href":"/donorman/icon.png?icon.1b8q8m70rx3to.png","sizes":"192x192","type":"image/png"}],["$","link","9",{"rel":"apple-touch-icon","href":"/donorman/apple-icon.png?apple-icon.2ofmhr39lvl3i.png","sizes":"180x180","type":"image/png"}],["$","$L19","10",{}]]
+18:null
