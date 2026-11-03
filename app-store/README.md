@@ -14,6 +14,9 @@ Apple ID (Connect): **6829261100** · Bundle ID: **`com.docbaran.donorman`**
 | `screenshots/ipad-13/` | iPad 13" display | 2048 × 2732 | **Yes** (app supports iPad) |
 | `screenshots/marketing/` | Not for Connect | various | Ads / social only |
 | `icon/AppIcon-1024.png` | App Information icon | 1024 × 1024 | If not already from Xcode |
+| `header/Header-1920x1080.png` | Promotional / In-App Event style header (icon + name) | 1920 × 1080 | When Connect asks for a header |
+| `header/Header-1600x900.png` | Same header, 16:9 alternate | 1600 × 900 | Optional |
+| `header/Header-1200x628.png` | Same header, compact / ads style | 1200 × 628 | Optional |
 | `LISTING.md` | Listing copy | — | Paste into Connect |
 | `PRIVACY.md` | Privacy policy source | — | Live at `/privacy/` |
 
