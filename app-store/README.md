@@ -14,19 +14,38 @@ Apple ID (Connect): **6829261100** · Bundle ID: **`com.docbaran.donorman`**
 | `screenshots/ipad-13/` | iPad 13" display | 2048 × 2732 | **Yes** (app supports iPad) |
 | `screenshots/marketing/` | Not for Connect | various | Ads / social only |
 | `icon/AppIcon-1024.png` | App Information icon | 1024 × 1024 | If not already from Xcode |
-| `header/Header-1920x1080.png` | Promotional / In-App Event style header (icon + name) | 1920 × 1080 | When Connect asks for a header |
-| `header/Header-1600x900.png` | Same header, 16:9 alternate | 1600 × 900 | Optional |
-| `header/Header-1200x628.png` | Same header, compact / ads style | 1200 × 628 | Optional |
+| `header/Header-3840x1646.png` | **Product page header** (21:9) | **3840 × 1646** | Creative asset |
+| `header/Search-3840x2560.png` | **Search results** (3:2) | **3840 × 2560** | Creative asset |
+| `header/Search-1920x1280.png` | Search results (3:2 min) | 1920 × 1280 | Alternate |
+| `header/Universal-5244x2950.png` | Header **or** search (16:9 universal) | **5244 × 2950 PNG** | One file for both |
 | `LISTING.md` | Listing copy | — | Paste into Connect |
 | `PRIVACY.md` | Privacy policy source | — | Live at `/privacy/` |
 
-## Why “file dimensions invalid” happens
+## Header & search results (creative assets)
 
-App Store Connect’s **required** iPhone slot is now **medium Dynamic Island**, which only accepts:
+These go under **Product Page Information → Header and Search Results** (not the Screenshots well).
+
+Apple only accepts these exact sizes ([spec](https://developer.apple.com/help/app-store-connect/reference/app-information/creative-assets-specifications/)):
+
+| Placement | Upload this file |
+| --- | --- |
+| Header | `header/Header-3840x1646.png` **or** `header/Universal-5244x2950.png` |
+| Search results | `header/Search-3840x2560.png` **or** the same universal PNG |
+
+**Fastest path:** upload `Universal-5244x2950.png` as the header, then check **Use header asset in search results**.
+
+Rules that cause “file dimensions invalid”:
+
+- Wrong pixel size (1920×1080 / 1200×628 are **not** accepted for header/search)
+- Alpha / transparency (these PNGs are flattened RGB)
+
+## Why screenshot “file dimensions invalid” happens
+
+App Store Connect’s **required** iPhone screenshot slot is **medium Dynamic Island**, which only accepts:
 
 - `1206 × 2622` or `1179 × 2556` (portrait)
 
-Older **1290 × 2796** (6.7") files are valid only in the **large** Dynamic Island slot — not the medium one. Dropping them on the medium tab produces “file dimensions invalid.”
+Older **1290 × 2796** (6.7") files are valid only in the **large** Dynamic Island slot — not the medium one.
 
 ## Upload checklist (App Store Connect)
 
@@ -41,12 +60,14 @@ Older **1290 × 2796** (6.7") files are valid only in the **large** Dynamic Isla
 3. **Screenshots — iPad**
    - Open **13" display**.
    - Upload `screenshots/ipad-13/01-phm-matching.png` (and optionally `02` / `03`).
-4. **Description fields** — copy from `LISTING.md`.
-5. **URLs**
+4. **Header and Search Results**
+   - Prefer `header/Universal-5244x2950.png`, or upload `Header-3840x1646.png` + `Search-3840x2560.png`.
+5. **Description fields** — copy from `LISTING.md`.
+6. **URLs**
    - Support: `https://docbaran-commits.github.io/donorman/`
    - Privacy Policy: `https://docbaran-commits.github.io/donorman/privacy/`
-6. **App Privacy** → **Data Not Collected**.
-7. Attach the TestFlight build, paste review notes from `LISTING.md`, submit.
+7. **App Privacy** → **Data Not Collected**.
+8. Attach the TestFlight build, paste review notes from `LISTING.md`, submit.
 
 ## Screenshot map
 
@@ -58,4 +79,4 @@ Older **1290 × 2796** (6.7") files are valid only in the **large** Dynamic Isla
 
 ## After pulling these files
 
-No Codemagic rebuild is required for listing screenshots. Download/pull this folder and upload the **iphone-medium** set into the medium Dynamic Island tab.
+No Codemagic rebuild is required for listing screenshots or creative assets. Download/pull this folder and upload into the matching Connect wells.
