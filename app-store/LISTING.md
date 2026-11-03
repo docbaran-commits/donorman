@@ -100,25 +100,30 @@ No login. No account. No network calls for calculation—values are computed on 
 
 To try the app: open it, adjust recipient and donor height/weight with the sliders or number fields, and watch the PHM ratio and caution label update in the header. Landscape shows recipient and donor side by side.
 
-Demo defaults already show an undersized example (caution). Increase donor weight (or lower recipient weight) to move into the 0.86–1.2 band.
+Defaults are male recipient / female donor at 5′7″ and 70 kg (mild undersize caution from sex difference). Increase donor weight to move into the 0.86–1.2 band.
 ```
 
 ## Screenshots to upload
 
-Upload from `screenshots/` in this folder:
+Upload from `screenshots/` in this folder. Match the **Connect tab name**, not the old inch labels.
 
-### iPhone 6.7" (required) — `screenshots/iphone-6.7/`
+### iPhone with Dynamic Island (medium display) — **required** — `screenshots/iphone-medium/` (1206×2622)
 1. `01-phm-matching.png`
 2. `02-size-ok.png`
 3. `03-caution.png`
 
-Optional framed marketing versions (same pixel size): `screenshots/marketing/*-framed.png`
+### iPhone with Dynamic Island (large display) — optional — `screenshots/iphone-large/` (1290×2796)
+Same three files.
 
-### iPhone 6.5" — `screenshots/iphone-6.5/`
-Same three files (resized).
+### iPhone with Face ID (large display) — optional — `screenshots/iphone-6.5/` (1242×2688)
+Same three files.
 
-### iPad 12.9" / 13" — `screenshots/ipad-12.9/`
+### iPad 13" display — **required** — `screenshots/ipad-13/` (2048×2732)
 1. `01-phm-matching.png`
+2. `02-size-ok.png` (optional)
+3. `03-caution.png` (optional)
+
+Do **not** upload `screenshots/marketing/` into Connect (framed marketing art).
 
 ## App icon
 

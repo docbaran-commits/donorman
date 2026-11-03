@@ -6,53 +6,53 @@ Apple ID (Connect): **6829261100** · Bundle ID: **`com.docbaran.donorman`**
 
 ## Folder map
 
-| Path | Use |
-| --- | --- |
-| `LISTING.md` | Subtitle, description, keywords, review notes, URLs — paste into Connect |
-| `PRIVACY.md` | Privacy policy source (also published at `/privacy/` on GitHub Pages) |
-| `icon/AppIcon-1024.png` | 1024×1024 App Store icon (no alpha) |
-| `screenshots/iphone-6.7/` | **Required** iPhone 6.7" (1290×2796) — upload these first |
-| `screenshots/iphone-6.5/` | iPhone 6.5" (1242×2688) |
-| `screenshots/ipad-12.9/` | iPad 12.9" / 13" (2048×2732) |
-| `screenshots/marketing/` | Optional framed versions (same pixel sizes) for ads / social |
+| Path | Connect slot | Exact size | Required? |
+| --- | --- | --- | --- |
+| `screenshots/iphone-medium/` | **iPhone with Dynamic Island (medium display)** | **1206 × 2622** | **Yes — upload these first** |
+| `screenshots/iphone-large/` | iPhone with Dynamic Island (large display) | 1290 × 2796 | Optional |
+| `screenshots/iphone-6.5/` | iPhone with Face ID (large display) | 1242 × 2688 | Optional |
+| `screenshots/ipad-13/` | iPad 13" display | 2048 × 2732 | **Yes** (app supports iPad) |
+| `screenshots/marketing/` | Not for Connect | various | Ads / social only |
+| `icon/AppIcon-1024.png` | App Information icon | 1024 × 1024 | If not already from Xcode |
+| `LISTING.md` | Listing copy | — | Paste into Connect |
+| `PRIVACY.md` | Privacy policy source | — | Live at `/privacy/` |
+
+## Why “file dimensions invalid” happens
+
+App Store Connect’s **required** iPhone slot is now **medium Dynamic Island**, which only accepts:
+
+- `1206 × 2622` or `1179 × 2556` (portrait)
+
+Older **1290 × 2796** (6.7") files are valid only in the **large** Dynamic Island slot — not the medium one. Dropping them on the medium tab produces “file dimensions invalid.”
 
 ## Upload checklist (App Store Connect)
 
-1. Open **Apps → DonorMan → App Store → iOS App → 1.0 Prepare for Submission** (or create version 1.0).
-2. **Screenshots**
-   - iPhone 6.7": upload `screenshots/iphone-6.7/01` → `02` → `03` in that order.
-   - iPhone 6.5": upload the matching trio from `screenshots/iphone-6.5/`.
-   - iPad 12.9": upload `screenshots/ipad-12.9/01-phm-matching.png`.
-   - Prefer the **non-framed** folders for Connect; keep `marketing/` for other use.
-3. **Description fields** — copy from `LISTING.md` (subtitle, promotional text, description, keywords, What’s New).
-4. **URLs**
+1. Open **Apps → DonorMan → App Store → iOS App → 1.0 Prepare for Submission**.
+2. **Screenshots — iPhone**
+   - Open the tab **iPhone with Dynamic Island (medium display)**.
+   - Upload, in order, from `screenshots/iphone-medium/`:
+     1. `01-phm-matching.png`
+     2. `02-size-ok.png`
+     3. `03-caution.png`
+   - (Optional) Also fill the large / 6.5" tabs from `iphone-large/` and `iphone-6.5/`.
+3. **Screenshots — iPad**
+   - Open **13" display**.
+   - Upload `screenshots/ipad-13/01-phm-matching.png` (and optionally `02` / `03`).
+4. **Description fields** — copy from `LISTING.md`.
+5. **URLs**
    - Support: `https://docbaran-commits.github.io/donorman/`
    - Privacy Policy: `https://docbaran-commits.github.io/donorman/privacy/`
-   - (Optional) Marketing: same as Support.
-5. **App Privacy** (App Store → App Privacy → Edit): choose **Data Not Collected**.
-6. **Age Rating**: answer the questionnaire; for “Medical/Treatment Information” select the mild/infrequent option if asked.
-7. **Export compliance**: already declared in the app (`ITSAppUsesNonExemptEncryption = false`). Confirm “No” for non-exempt encryption if Connect asks again.
-8. **Build**: select the Codemagic / TestFlight build that processed successfully.
-9. **App Review notes**: paste the block from `LISTING.md`.
-10. Submit for review.
-
-## Privacy URL go-live
-
-The privacy page ships with this PR as:
-
-- Source: `src/app/privacy/page.tsx`
-- Published: `docs/privacy/` on `main` → [https://docbaran-commits.github.io/donorman/privacy/](https://docbaran-commits.github.io/donorman/privacy/)
-
-Merge this PR (or at least publish `docs/privacy/`) **before** submitting for App Review so Apple can open the Privacy Policy URL.
+6. **App Privacy** → **Data Not Collected**.
+7. Attach the TestFlight build, paste review notes from `LISTING.md`, submit.
 
 ## Screenshot map
 
 | File | Story |
 | --- | --- |
-| `01-phm-matching.png` | Default demo — PHM 0.72, caution undersized |
-| `02-size-ok.png` | Size OK band (~0.88) |
-| `03-caution.png` | Severe undersize (~0.52) |
+| `01-phm-matching.png` | Defaults — both 5′7″ / 70 kg (PHM ~0.85, mild caution) |
+| `02-size-ok.png` | Donor heavier — size OK band |
+| `03-caution.png` | Clear undersize caution |
 
-## After merge
+## After pulling these files
 
-No Codemagic rebuild is required for listing assets. Only merge + (if needed) wait for GitHub Pages to update the privacy URL, then finish the Connect form and submit.
+No Codemagic rebuild is required for listing screenshots. Download/pull this folder and upload the **iphone-medium** set into the medium Dynamic Island tab.
