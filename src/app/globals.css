@@ -92,29 +92,40 @@ input[type="number"] {
   font-weight: 600;
 }
 
-input[type="range"] {
+input[type="range"],
+input.metric-range {
   -webkit-appearance: none;
   appearance: none;
   background: transparent;
+  /* Capacitor / iOS WKWebView: claim the gesture so parent overflow scroll
+     cannot steal horizontal drag after the initial tap. */
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
-input[type="range"]::-webkit-slider-runnable-track {
+input[type="range"]::-webkit-slider-runnable-track,
+input.metric-range::-webkit-slider-runnable-track {
   height: 0.5rem;
   border-radius: 999px;
   background: #d6d3d1;
 }
 
-input[type="range"]::-webkit-slider-thumb {
+input[type="range"]::-webkit-slider-thumb,
+input.metric-range::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  margin-top: -0.5rem;
-  width: 1.5rem;
-  height: 1.5rem;
+  /* Center thumb on the track; keep a large hit target for finger drag. */
+  margin-top: -0.55rem;
+  width: 1.75rem;
+  height: 1.75rem;
   border-radius: 999px;
   background: #1c1917;
   border: 3px solid #fafaf9;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
   cursor: pointer;
+  /* Improve iOS thumb hit-testing during drag */
+  touch-action: none;
 }
 
 input[type="range"]::-moz-range-track {

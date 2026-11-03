@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import { FemaleIcon, MaleIcon } from "@/components/sex-icons"
 import {
@@ -207,48 +207,33 @@ export function PersonPanel({
               )}
             </div>
             {value.heightUnit === "ftin" && (
-              <input
-                type="range"
+              <RangeSlider
                 aria-label={`${title} inches`}
                 min={0}
                 max={11.5}
                 step={0.5}
                 value={inches}
-                onInput={(event) =>
-                  setHeightFromFeetInches(feet, Number((event.target as HTMLInputElement).value))
-                }
-                onChange={(event) => setHeightFromFeetInches(feet, Number(event.target.value))}
-                className="block h-6 w-full shrink-0 cursor-pointer accent-stone-900"
+                onValueChange={(next) => setHeightFromFeetInches(feet, next)}
               />
             )}
             {value.heightUnit === "cm" && (
-              <input
-                type="range"
+              <RangeSlider
                 aria-label={`${title} cm`}
                 min={140}
                 max={210}
                 step={1}
                 value={clamp(cm, 140, 210)}
-                onInput={(event) =>
-                  patch({ heightM: cmToM(Number((event.target as HTMLInputElement).value)) })
-                }
-                onChange={(event) => patch({ heightM: cmToM(Number(event.target.value)) })}
-                className="block h-6 w-full shrink-0 cursor-pointer accent-stone-900"
+                onValueChange={(next) => patch({ heightM: cmToM(next) })}
               />
             )}
             {value.heightUnit === "m" && (
-              <input
-                type="range"
+              <RangeSlider
                 aria-label={`${title} m`}
                 min={1.4}
                 max={2.1}
                 step={0.01}
                 value={clamp(value.heightM, 1.4, 2.1)}
-                onInput={(event) =>
-                  patch({ heightM: Number((event.target as HTMLInputElement).value) })
-                }
-                onChange={(event) => patch({ heightM: Number(event.target.value) })}
-                className="block h-6 w-full shrink-0 cursor-pointer accent-stone-900"
+                onValueChange={(next) => patch({ heightM: next })}
               />
             )}
           </div>
@@ -284,32 +269,22 @@ export function PersonPanel({
               )}
             </div>
             {value.weightUnit === "lb" ? (
-              <input
-                type="range"
+              <RangeSlider
                 aria-label={`${title} lb`}
                 min={MIN_WEIGHT_LB}
                 max={MAX_WEIGHT_LB}
                 step={1}
                 value={clamp(lb, MIN_WEIGHT_LB, MAX_WEIGHT_LB)}
-                onInput={(event) =>
-                  patch({ weightKg: lbToKg(Number((event.target as HTMLInputElement).value)) })
-                }
-                onChange={(event) => patch({ weightKg: lbToKg(Number(event.target.value)) })}
-                className="block h-6 w-full shrink-0 cursor-pointer accent-stone-900"
+                onValueChange={(next) => patch({ weightKg: lbToKg(next) })}
               />
             ) : (
-              <input
-                type="range"
+              <RangeSlider
                 aria-label={`${title} kg`}
                 min={MIN_WEIGHT_KG}
                 max={MAX_WEIGHT_KG}
                 step={1}
                 value={clamp(kg, MIN_WEIGHT_KG, MAX_WEIGHT_KG)}
-                onInput={(event) =>
-                  patch({ weightKg: Number((event.target as HTMLInputElement).value) })
-                }
-                onChange={(event) => patch({ weightKg: Number(event.target.value) })}
-                className="block h-6 w-full shrink-0 cursor-pointer accent-stone-900"
+                onValueChange={(next) => patch({ weightKg: next })}
               />
             )}
           </div>
@@ -325,6 +300,73 @@ function totalInchesToSafe(totalInches: number) {
 
 function clamp(n: number, min: number, max: number) {
   return Math.min(max, Math.max(min, n))
+}
+
+/**
+ * iOS WKWebView / Capacitor: parent overflow scroll steals drag, and controlled
+ * React re-renders mid-gesture can cancel the native range interaction. Keep a
+ * local value while dragging and claim the touch with touch-action: none.
+ */
+function RangeSlider({
+  value,
+  min,
+  max,
+  step,
+  onValueChange,
+  "aria-label": ariaLabel,
+}: {
+  value: number
+  min: number
+  max: number
+  step: number
+  onValueChange: (next: number) => void
+  "aria-label": string
+}) {
+  const [dragging, setDragging] = useState(false)
+  const [local, setLocal] = useState(value)
+
+  useEffect(() => {
+    if (!dragging) setLocal(value)
+  }, [value, dragging])
+
+  function endDrag() {
+    setDragging(false)
+  }
+
+  function commit(next: number) {
+    const clamped = clamp(next, min, max)
+    setLocal(clamped)
+    onValueChange(clamped)
+  }
+
+  return (
+    <input
+      type="range"
+      aria-label={ariaLabel}
+      min={min}
+      max={max}
+      step={step}
+      value={dragging ? local : value}
+      onPointerDown={(event) => {
+        setDragging(true)
+        // Keep this control as the gesture target inside scrollable panels.
+        event.currentTarget.setPointerCapture?.(event.pointerId)
+      }}
+      onPointerUp={endDrag}
+      onPointerCancel={endDrag}
+      onLostPointerCapture={endDrag}
+      onTouchStart={(event) => {
+        setDragging(true)
+        // Stop the panel's overflow-y scroll from taking the gesture on iOS.
+        event.stopPropagation()
+      }}
+      onTouchEnd={endDrag}
+      onTouchCancel={endDrag}
+      onInput={(event) => commit(Number(event.currentTarget.value))}
+      onChange={(event) => commit(Number(event.currentTarget.value))}
+      className="metric-range block h-8 w-full shrink-0 cursor-pointer accent-stone-900"
+    />
+  )
 }
 
 function UnitTabs<T extends string>({

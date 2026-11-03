@@ -1,0 +1,6 @@
+:HL["/donorman/_next/static/chunks/0q-0cuoje0mn-.css","style"]
+:HL["/donorman/_next/static/media/48eea41d8317494f-s.p.0wiir8udbzjvx.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/donorman/_next/static/media/edb99fec956915f8-s.p.32sris142tqlb.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+2:[["children",{"s":"__PAGE__","h":160}]]
+1:[["children",{"s":"privacy","h":96,"c":"$Q2"}]]
+0:{"b":"IYrs4hD_yAAoMil_oi9yU","t":{"t":{"s":"","h":80,"c":"$Q1"}}}

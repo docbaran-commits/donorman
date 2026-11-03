@@ -8,7 +8,9 @@ const config: CapacitorConfig = {
   // The web UI caps itself (~430px) and pins to the leading half on wide canvases.
   ios: {
     contentInset: 'automatic',
-    scrollEnabled: true,
+    // App shell manages its own overflow. Native WKWebView scrolling steals
+    // range-slider drag gestures in TestFlight / Capacitor.
+    scrollEnabled: false,
   },
 };
 
